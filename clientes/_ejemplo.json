@@ -1,0 +1,82 @@
+{
+  "_instrucciones": "Copiá este archivo con el nombre del cliente (ej: luna-store.json) y completá todos los campos. Los archivos *.json en esta carpeta están en .gitignore. La service role key NO va aquí — exportala como env var antes de correr el script: export SUPABASE_SERVICE_ROLE_KEY=<key>",
+
+  "slug": "nombre-tienda",
+  "supabase_url": "https://XXXXXXXXXX.supabase.co",
+  "supabase_anon_key": "eyJ...",
+  "admin_email": "admin@tienda.com",
+  "admin_password": "cambiame123",
+
+  "settings": {
+    "store_name": "Nombre de la Tienda",
+    "store_tagline": "Frase corta que aparece debajo del logo",
+    "store_description": "Descripción de la tienda para SEO y meta tags.",
+    "logo_url": "",
+    "favicon_url": "",
+
+    "contact_email": "contacto@tienda.com",
+    "contact_phone": "+54 9 11 1234-5678",
+    "contact_whatsapp": "https://wa.me/5491112345678",
+    "contact_address": "Ciudad, País",
+    "contact_hours": "Lunes a Viernes de 10 a 18hs",
+
+    "social_instagram": "https://instagram.com/nombretienda",
+    "instagram_handle": "nombretienda",
+    "social_pinterest": "",
+    "social_twitter": "",
+    "social_facebook": "",
+    "social_tiktok": "",
+
+    "hero_title": "Nueva Colección",
+    "hero_season_label": "Colección Verano 2025",
+    "hero_subtitle": "Piezas únicas, diseñadas con atención al detalle.",
+    "hero_cta_text": "Ver colección",
+    "hero_cta_href": "/products",
+    "hero_image_url": "",
+
+    "editorial_strip_title": "Hecho con intención",
+    "editorial_strip_subtitle": "Cada pieza cuenta una historia",
+
+    "editorial_title": "La Colección",
+    "editorial_season_label": "Primavera · Verano",
+    "editorial_description": "Descripción de la colección destacada.",
+    "editorial_cta_href": "/collections",
+
+    "announcement_bar": {
+      "active": false,
+      "text": "Envío gratis en pedidos sobre $500",
+      "link": ""
+    },
+
+    "newsletter_title": "Acceso exclusivo",
+    "newsletter_subtitle": "Suscribite para recibir novedades y ofertas antes que nadie.",
+    "newsletter_active": true,
+
+    "store_currency": "USD",
+    "store_locale": "en-US",
+    "free_shipping_threshold": 500,
+    "shipping_standard": 15,
+    "tax_rate": 0.21,
+    "footer_copyright_year": 2025,
+
+    "brand_colors": {
+      "primary": "#C4A265",
+      "accent": "#A47764"
+    },
+
+    "features": {
+      "show_editorial_strip": true,
+      "show_editorial_section": true,
+      "show_press_strip": false,
+      "show_instagram_feed": true,
+      "show_newsletter_cta": true,
+      "show_announcement_bar": false
+    },
+
+    "seo_home_title": "Nombre Tienda — Moda femenina",
+    "seo_home_description": "Descripción de la tienda para Google. Máximo 160 caracteres.",
+    "seo_products_description": "Explorá nuestro catálogo de productos.",
+    "seo_collections_description": "Descubrí nuestras colecciones.",
+    "seo_og_image": ""
+  }
+}
