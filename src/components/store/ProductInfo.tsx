@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Heart, Plus, Minus } from 'lucide-react'
 import type { Product, Category } from '@/types'
 import { useCartStore } from '@/lib/store/cart'
+import { useWishlistStore } from '@/lib/store/wishlist'
 import { formatPrice, cn } from '@/lib/utils'
 import Button from '@/components/ui/Button'
 
@@ -51,8 +52,9 @@ export default function ProductInfo({ product, category }: ProductInfoProps) {
   const [selectedSize, setSelectedSize] = useState('')
   const [sizeError, setSizeError] = useState(false)
   const [addState, setAddState] = useState<'idle' | 'loading' | 'success'>('idle')
-  const [wishlisted, setWishlisted] = useState(false)
   const [openAccordion, setOpenAccordion] = useState<string | null>(null)
+  const { toggleItem, isWishlisted } = useWishlistStore()
+  const wishlisted = isWishlisted(product.id)
 
   // Sizes available for selected color
   const sizesForColor = product.variants
@@ -203,7 +205,7 @@ export default function ProductInfo({ product, category }: ProductInfoProps) {
 
       {/* Wishlist */}
       <button
-        onClick={() => setWishlisted(!wishlisted)}
+        onClick={() => toggleItem(product.id)}
         className={cn(
           'w-full h-[48px] flex items-center justify-center gap-2 border transition-all duration-[400ms] ease-luxury font-body text-[12px] uppercase tracking-[0.1em] mb-10',
           wishlisted
