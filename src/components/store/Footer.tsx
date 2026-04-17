@@ -1,23 +1,17 @@
 'use client'
 
-import Link from 'next/link'
 import Image from 'next/image'
 import { Instagram } from 'lucide-react'
 import { useSiteConfig } from '@/lib/site-config-context'
 
 const CUSTOMER_CARE = [
-  { label: 'Contacto', href: '/contact' },
-  { label: 'Envíos y devoluciones', href: '/shipping-returns' },
-  { label: 'Guía de talles', href: '/size-guide' },
-  { label: 'Preguntas frecuentes', href: '/faq' },
+  'Contacto',
+  'Envíos y devoluciones',
+  'Guía de talles',
+  'Preguntas frecuentes',
 ]
 
-const ABOUT = [
-  { label: 'Nuestra historia', href: '/about' },
-  { label: 'Atelier', href: '/atelier' },
-  { label: 'Sostenibilidad', href: '/sustainability' },
-  { label: 'Prensa', href: '/press' },
-]
+const ABOUT = ['Nuestra historia', 'Atelier', 'Sostenibilidad', 'Prensa']
 
 function PinterestIcon({ className }: { className?: string }) {
   return (
@@ -69,13 +63,13 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-8 text-center md:text-left">
           {/* Brand */}
           <div className="flex flex-col items-center md:items-start">
-            <Link href="/" className="font-display text-[20px] tracking-[0.08em] text-charcoal">
+            <div className="font-display text-[20px] tracking-[0.08em] text-charcoal">
               {identity.logo_url ? (
                 <Image src={identity.logo_url} alt={identity.store_name} width={160} height={32} className="h-8 w-auto object-contain" />
               ) : (
                 identity.store_name
               )}
-            </Link>
+            </div>
             {identity.tagline && (
               <p className="font-body text-[13px] italic text-warm-gray mt-3 max-w-[220px]">
                 {identity.tagline}
@@ -90,34 +84,34 @@ export default function Footer() {
             {/* Social icons */}
             <div className="flex items-center gap-5 mt-6">
               {social.instagram && (
-                <a href={social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-warm-gray hover:text-charcoal transition-colors duration-200">
+                <span aria-hidden className="text-warm-gray hover:text-charcoal transition-colors duration-200 inline-flex">
                   <Instagram className="h-[18px] w-[18px]" strokeWidth={1.5} />
-                </a>
+                </span>
               )}
               {social.pinterest && (
-                <a href={social.pinterest} target="_blank" rel="noopener noreferrer" aria-label="Pinterest" className="text-warm-gray hover:text-charcoal transition-colors duration-200">
+                <span aria-hidden className="text-warm-gray hover:text-charcoal transition-colors duration-200 inline-flex">
                   <PinterestIcon className="h-[18px] w-[18px]" />
-                </a>
+                </span>
               )}
               {social.twitter && (
-                <a href={social.twitter} target="_blank" rel="noopener noreferrer" aria-label="X" className="text-warm-gray hover:text-charcoal transition-colors duration-200">
+                <span aria-hidden className="text-warm-gray hover:text-charcoal transition-colors duration-200 inline-flex">
                   <XIcon className="h-[18px] w-[18px]" />
-                </a>
+                </span>
               )}
               {social.facebook && (
-                <a href={social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-warm-gray hover:text-charcoal transition-colors duration-200">
+                <span aria-hidden className="text-warm-gray hover:text-charcoal transition-colors duration-200 inline-flex">
                   <FacebookIcon className="h-[18px] w-[18px]" />
-                </a>
+                </span>
               )}
               {social.tiktok && (
-                <a href={social.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="text-warm-gray hover:text-charcoal transition-colors duration-200 inline-flex p-1 -m-1">
+                <span aria-hidden className="text-warm-gray hover:text-charcoal transition-colors duration-200 inline-flex p-1 -m-1">
                   <TikTokIcon className="h-[18px] w-[18px]" />
-                </a>
+                </span>
               )}
               {contact.whatsapp && (
-                <a href={contact.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-warm-gray hover:text-charcoal transition-colors duration-200 inline-flex p-1 -m-1">
+                <span aria-hidden className="text-warm-gray hover:text-charcoal transition-colors duration-200 inline-flex p-1 -m-1">
                   <WhatsAppIcon className="h-[18px] w-[18px]" />
-                </a>
+                </span>
               )}
             </div>
           </div>
@@ -128,43 +122,34 @@ export default function Footer() {
               Atención al cliente
             </h3>
             <ul className="flex flex-col gap-2">
-              {CUSTOMER_CARE.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="group font-body text-[13px] text-dark-gray hover:text-charcoal transition-colors duration-200 inline-block py-1.5 -my-0.5 px-1 -mx-1 rounded-sm"
-                  >
+              {CUSTOMER_CARE.map((label) => (
+                <li key={label}>
+                  <span className="group font-body text-[13px] text-dark-gray hover:text-charcoal transition-colors duration-200 inline-block py-1.5 -my-0.5 px-1 -mx-1 rounded-sm">
                     <span className="relative">
-                      {link.label}
+                      {label}
                       <span className="absolute -bottom-0.5 left-0 h-[1px] w-0 bg-charcoal transition-all duration-300 group-hover:w-full" />
                     </span>
-                  </Link>
+                  </span>
                 </li>
               ))}
               {contact.email && (
                 <li>
-                  <a
-                    href={`mailto:${contact.email}`}
-                    className="group font-body text-[13px] text-dark-gray hover:text-charcoal transition-colors duration-200 inline-block py-1.5 -my-0.5 px-1 -mx-1 rounded-sm"
-                  >
+                  <span className="group font-body text-[13px] text-dark-gray hover:text-charcoal transition-colors duration-200 inline-block py-1.5 -my-0.5 px-1 -mx-1 rounded-sm">
                     <span className="relative">
                       {contact.email}
                       <span className="absolute -bottom-0.5 left-0 h-[1px] w-0 bg-charcoal transition-all duration-300 group-hover:w-full" />
                     </span>
-                  </a>
+                  </span>
                 </li>
               )}
               {contact.phone && (
                 <li>
-                  <a
-                    href={`tel:${contact.phone}`}
-                    className="group font-body text-[13px] text-dark-gray hover:text-charcoal transition-colors duration-200 inline-block py-1.5 -my-0.5 px-1 -mx-1 rounded-sm"
-                  >
+                  <span className="group font-body text-[13px] text-dark-gray hover:text-charcoal transition-colors duration-200 inline-block py-1.5 -my-0.5 px-1 -mx-1 rounded-sm">
                     <span className="relative">
                       {contact.phone}
                       <span className="absolute -bottom-0.5 left-0 h-[1px] w-0 bg-charcoal transition-all duration-300 group-hover:w-full" />
                     </span>
-                  </a>
+                  </span>
                 </li>
               )}
             </ul>
@@ -176,17 +161,14 @@ export default function Footer() {
               Nosotros
             </h3>
             <ul className="flex flex-col gap-2">
-              {ABOUT.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="group font-body text-[13px] text-dark-gray hover:text-charcoal transition-colors duration-200 inline-block py-1.5 -my-0.5 px-1 -mx-1 rounded-sm"
-                  >
+              {ABOUT.map((label) => (
+                <li key={label}>
+                  <span className="group font-body text-[13px] text-dark-gray hover:text-charcoal transition-colors duration-200 inline-block py-1.5 -my-0.5 px-1 -mx-1 rounded-sm">
                     <span className="relative">
-                      {link.label}
+                      {label}
                       <span className="absolute -bottom-0.5 left-0 h-[1px] w-0 bg-charcoal transition-all duration-300 group-hover:w-full" />
                     </span>
-                  </Link>
+                  </span>
                 </li>
               ))}
             </ul>
@@ -200,12 +182,12 @@ export default function Footer() {
             © {commerce.footer_copyright_year} {identity.store_name}. Todos los derechos reservados.
           </p>
           <div className="flex items-center gap-4 sm:gap-6">
-            <Link href="/privacy" className="font-body text-[11px] text-warm-gray hover:text-charcoal transition-colors duration-200 inline-block py-1.5 px-1 -mx-1 -my-1 rounded-sm">
+            <span className="font-body text-[11px] text-warm-gray hover:text-charcoal transition-colors duration-200 inline-block py-1.5 px-1 -mx-1 -my-1 rounded-sm">
               Política de privacidad
-            </Link>
-            <Link href="/terms" className="font-body text-[11px] text-warm-gray hover:text-charcoal transition-colors duration-200 inline-block py-1.5 px-1 -mx-1 -my-1 rounded-sm">
+            </span>
+            <span className="font-body text-[11px] text-warm-gray hover:text-charcoal transition-colors duration-200 inline-block py-1.5 px-1 -mx-1 -my-1 rounded-sm">
               Términos
-            </Link>
+            </span>
           </div>
         </div>
       </div>

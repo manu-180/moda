@@ -52,7 +52,12 @@ export default function EditorialSection() {
       </motion.div>
 
       {/* Content — 45% */}
-      <div className="w-full md:w-[45%] bg-ivory flex items-center">
+      <div className="w-full md:w-[45%] bg-ivory flex items-center relative">
+        {/* Champagne vertical accent line */}
+        <div
+          className="absolute left-0 top-1/4 bottom-1/4 w-[1.5px] hidden md:block"
+          style={{ background: 'linear-gradient(to bottom, transparent, var(--color-brand-primary), transparent)', opacity: 0.5 }}
+        />
         <div className="px-8 md:px-16 lg:px-20 py-12 md:py-20 max-w-[560px]">
           {editorial.season_label && (
             <motion.p
@@ -82,11 +87,21 @@ export default function EditorialSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
               transition={{ delay: 0.7, duration: 0.8, ease }}
-              className="font-body text-[14px] md:text-[15px] font-light text-dark-gray leading-[1.7] mb-9"
+              className="font-body text-[14px] md:text-[15px] font-light text-dark-gray leading-[1.7] mb-8"
             >
               {editorial.description}
             </motion.p>
           )}
+
+          {/* Decorative divider before CTA */}
+          <motion.div
+            initial={{ width: 0 }}
+            whileInView={{ width: 40 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ delay: 0.85, duration: 0.8, ease }}
+            className="h-px mb-8"
+            style={{ background: 'var(--color-brand-primary)' }}
+          />
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}

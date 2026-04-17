@@ -13,7 +13,7 @@ export default function NewArrivals({ products }: NewArrivalsProps) {
   const items = products.slice(0, 8)
 
   return (
-    <section className="py-20 md:py-[120px] bg-white px-6 md:px-16 lg:px-20">
+    <section className="py-20 md:py-[120px] bg-soft-white px-6 md:px-16 lg:px-20">
       <div className="max-w-[1600px] mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-14 md:mb-20 gap-4">
@@ -21,7 +21,12 @@ export default function NewArrivals({ products }: NewArrivalsProps) {
             <h2 className="font-display italic text-charcoal text-[36px] md:text-[48px] lg:text-[56px] leading-[1.1]">
               Novedades.
             </h2>
-            <div className="w-12 h-[1px] bg-mocha mt-4" />
+            <div className="flex items-center gap-3 mt-4">
+              <div className="w-10 h-[1px]" style={{ background: 'var(--color-brand-primary)' }} />
+              <span className="font-body text-[10px] uppercase tracking-[0.22em] text-warm-gray">
+                FW 2025
+              </span>
+            </div>
           </div>
           <Link
             href="/collections/new-arrivals"

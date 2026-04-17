@@ -3,12 +3,37 @@ import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import type { Product, Collection } from '@/types'
 import { SITE_NAME } from '@/lib/constants'
+import { editorialImages } from '@/lib/editorial-images'
 import CollectionPageContent from '@/components/store/CollectionPage'
+
+/** Ruta fija del menú; no requiere fila en `collections` (usa `products.is_new`). */
+const NEW_ARRIVALS_SLUG = 'new-arrivals'
+
+const VIRTUAL_NEW_ARRIVALS: Collection = {
+  id: 'a0000000-0000-4000-8000-000000000001',
+  name: 'Novedades',
+  slug: NEW_ARRIVALS_SLUG,
+  description:
+    'Piezas recién incorporadas: lo último en siluetas, tejidos y detalles para esta temporada.',
+  image_url: editorialImages.collectionNew,
+  is_active: true,
+}
 
 interface PageProps { params: { slug: string } }
 
 async function getData(slug: string) {
   const supabase = createClient()
+
+  if (slug === NEW_ARRIVALS_SLUG) {
+    const { data: products } = await supabase
+      .from('products')
+      .select('*, images:product_images(*), variants:product_variants(*)')
+      .eq('status', 'active')
+      .eq('is_new', true)
+      .order('created_at', { ascending: false })
+
+    return { collection: VIRTUAL_NEW_ARRIVALS, products: (products as Product[]) || [] }
+  }
 
   const { data: collection } = await supabase
     .from('collections')

@@ -20,12 +20,12 @@ export default function CartPageContent() {
   const getTotal = useCartStore((s) => s.getTotal)
   const getItemCount = useCartStore((s) => s.getItemCount)
 
+  const { commerce } = useSiteConfig()
+
   // Hydration guard
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
   if (!mounted) return null
-
-  const { commerce } = useSiteConfig()
   const subtotal = getTotal()
   const shipping = subtotal >= commerce.free_shipping_threshold ? 0 : commerce.shipping_standard
   const tax = Math.round(subtotal * commerce.tax_rate * 100) / 100

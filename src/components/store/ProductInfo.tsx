@@ -1,13 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Heart, Plus, Minus } from 'lucide-react'
 import type { Product, Category } from '@/types'
 import { useCartStore } from '@/lib/store/cart'
+import { useCartAnimationStore } from '@/lib/store/cart-animation'
 import { useWishlistStore } from '@/lib/store/wishlist'
-import { formatPrice, cn } from '@/lib/utils'
+import { formatPrice, cn, compareClothingSizes } from '@/lib/utils'
 import Button from '@/components/ui/Button'
 
 const ease = [0.25, 0.1, 0.25, 1] as const
@@ -40,6 +41,8 @@ interface ProductInfoProps {
 
 export default function ProductInfo({ product, category }: ProductInfoProps) {
   const addItem = useCartStore((s) => s.addItem)
+  const triggerFly = useCartAnimationStore((s) => s.triggerFly)
+  const addBtnRef = useRef<HTMLDivElement>(null)
   const hasSale = product.compare_at_price && product.compare_at_price > product.price
 
   // Unique colors & sizes
@@ -62,7 +65,8 @@ export default function ProductInfo({ product, category }: ProductInfoProps) {
     .reduce<{ size: string; stock: number; id: string }[]>((acc, v) => {
       if (!acc.find((s) => s.size === v.size)) acc.push({ size: v.size, stock: v.stock, id: v.id })
       return acc
-    }, []) || []
+    }, [])
+    .sort((a, b) => compareClothingSizes(a.size, b.size)) || []
 
   const selectedVariant = product.variants?.find(
     (v) => v.color === selectedColor && v.size === selectedSize
@@ -76,6 +80,12 @@ export default function ProductInfo({ product, category }: ProductInfoProps) {
       return
     }
     if (!selectedVariant || selectedVariant.stock === 0) return
+
+    // Dispara la bolita desde el centro del botón
+    if (addBtnRef.current) {
+      const rect = addBtnRef.current.getBoundingClientRect()
+      triggerFly(rect.left + rect.width / 2, rect.top + rect.height / 2)
+    }
 
     setAddState('loading')
     setTimeout(() => {
@@ -189,6 +199,7 @@ export default function ProductInfo({ product, category }: ProductInfoProps) {
       </div>
 
       {/* Add to bag */}
+      <div ref={addBtnRef}>
       <Button
         fullWidth
         disabled={noStockAtAll || isOutOfStock}
@@ -202,6 +213,7 @@ export default function ProductInfo({ product, category }: ProductInfoProps) {
             ? 'Agregado ✓'
             : 'Agregar a la bolsa'}
       </Button>
+      </div>
 
       {/* Wishlist */}
       <button

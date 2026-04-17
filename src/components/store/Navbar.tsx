@@ -3,12 +3,14 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useAnimation } from 'framer-motion'
 import Image from 'next/image'
 import { Search, Heart, ShoppingBag, User, Menu, X } from 'lucide-react'
 import { useCartStore } from '@/lib/store/cart'
+import { useCartAnimationStore } from '@/lib/store/cart-animation'
 import CartDrawer from './CartDrawer'
 import SearchOverlay from './SearchOverlay'
+import CartFlyEffect from './CartFlyEffect'
 import { cn } from '@/lib/utils'
 import { editorialImages } from '@/lib/editorial-images'
 import { useSiteConfig } from '@/lib/site-config-context'
@@ -18,6 +20,9 @@ const NAV_LINKS = [
   { label: 'COLECCIONES', href: '/collections' },
   { label: 'TIENDA', href: '/products' },
 ] as const
+
+/** Ruta de novedades (virtual); comparte prefijo `/collections` con el índice de colecciones. */
+const NEW_ARRIVALS_PATH = '/collections/new-arrivals'
 
 const CATEGORIES = [
   { label: 'Vestidos', href: '/products?category=dresses' },
@@ -30,6 +35,8 @@ const CATEGORIES = [
 
 function isNavActive(pathname: string, href: string) {
   if (href === '/') return pathname === '/'
+  // Evita dos ítems activos: /collections/new-arrivals empieza por /collections/
+  if (href === '/collections' && pathname === NEW_ARRIVALS_PATH) return false
   return pathname === href || pathname.startsWith(`${href}/`)
 }
 
@@ -44,8 +51,20 @@ export default function Navbar() {
   const megaTimeout = useRef<NodeJS.Timeout | null>(null)
   const itemCount = useCartStore((s) => s.getItemCount())
 
+  const bagGlowCount = useCartAnimationStore((s) => s.bagGlowCount)
+  const bagBounceControls = useAnimation()
+
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
+
+  // Bounce del ícono de bolsa cada vez que llega un producto
+  useEffect(() => {
+    if (bagGlowCount === 0) return
+    void bagBounceControls.start({
+      scale: [1, 1.45, 0.82, 1.12, 0.96, 1],
+      transition: { duration: 0.6, ease: [0.34, 1.3, 0.64, 1] },
+    })
+  }, [bagGlowCount, bagBounceControls])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
@@ -182,18 +201,35 @@ export default function Navbar() {
             <button type="button" aria-label="Favoritos" className={iconBtn('')}>
               <Heart className="h-[22px] w-[22px]" strokeWidth={1.25} />
             </button>
-            <button type="button" aria-label="Bolsa de compras" className={cn(iconBtn(''), 'relative')} onClick={() => setCartOpen(true)}>
-              <ShoppingBag className="h-[22px] w-[22px]" strokeWidth={1.25} />
-              {mounted && itemCount > 0 && (
-                <span
-                  className={cn(
-                    'absolute -top-0.5 -right-0.5 flex h-4 min-w-[16px] px-0.5 items-center justify-center text-[9px] font-body font-medium rounded-full tabular-nums',
-                    atopDarkHero ? 'bg-white text-charcoal border border-white/40' : 'bg-charcoal text-white'
-                  )}
-                >
-                  {itemCount}
-                </span>
-              )}
+            <button
+              type="button"
+              aria-label="Bolsa de compras"
+              data-cart-bag
+              className={cn(iconBtn(''), 'relative')}
+              onClick={() => setCartOpen(true)}
+            >
+              {/* Bounce del ícono al recibir un producto — el glow/burst viene del portal */}
+              <motion.span animate={bagBounceControls} className="inline-flex">
+                <ShoppingBag className="h-[22px] w-[22px]" strokeWidth={1.25} />
+              </motion.span>
+
+              {/* Badge con pop animation al agregar */}
+              <AnimatePresence>
+                {mounted && itemCount > 0 && (
+                  <motion.span
+                    key={itemCount}
+                    className={cn(
+                      'absolute -top-0.5 -right-0.5 flex h-4 min-w-[16px] px-0.5 items-center justify-center text-[9px] font-body font-medium rounded-full tabular-nums',
+                      atopDarkHero ? 'bg-white text-charcoal border border-white/40' : 'bg-charcoal text-white'
+                    )}
+                    initial={{ scale: 0.4, opacity: 0 }}
+                    animate={{ scale: [1.7, 0.9, 1], opacity: 1 }}
+                    transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
+                  >
+                    {itemCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </button>
             <Link href="/auth/login" aria-label="Cuenta" className={iconBtn('')}>
               <User className="h-[22px] w-[22px]" strokeWidth={1.25} />
@@ -213,7 +249,7 @@ export default function Navbar() {
               onMouseLeave={handleMegaLeave}
               className="absolute top-full left-0 right-0 hidden md:block bg-white border-b border-pale-gray/90 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.08)]"
             >
-              <div className="max-w-[1600px] mx-auto px-10 lg:px-16 py-10 grid grid-cols-4 gap-10">
+              <div className="max-w-[1600px] mx-auto px-10 lg:px-16 py-5 flex gap-12">
                 {[CATEGORIES.slice(0, 3), CATEGORIES.slice(3, 6)].map((group, i) => (
                   <div key={i} className="flex flex-col gap-3">
                     {group.map((cat) => (
@@ -238,29 +274,6 @@ export default function Navbar() {
                     </Link>
                   </div>
                 ))}
-
-                <div />
-
-                <Link
-                  href={editorial.cta_href}
-                  onClick={() => setMegaOpen(false)}
-                  className="col-span-2 relative aspect-[4/3] overflow-hidden group block"
-                >
-                  <Image
-                    src={editorialImages.megaMenu}
-                    alt={editorial.title}
-                    fill
-                    className="object-cover transition-transform duration-[800ms] ease-luxury group-hover:scale-[1.04]"
-                    sizes="(max-width: 1600px) 40vw, 640px"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
-                  <div className="absolute inset-0 flex items-end p-6">
-                    <div>
-                      <p className="font-display text-lg text-white drop-shadow-sm">{editorial.title}</p>
-                      <p className="font-body text-[12px] text-white/85 mt-1">Explorá la colección</p>
-                    </div>
-                  </div>
-                </Link>
               </div>
             </motion.div>
           )}
@@ -312,23 +325,33 @@ export default function Navbar() {
             <button
               type="button"
               aria-label="Bolsa de compras"
+              data-cart-bag
               className={cn(
                 'relative min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-sm touch-manipulation focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2',
                 atopDarkHero ? 'text-white/95 focus-visible:outline-white/70' : 'text-charcoal focus-visible:outline-charcoal/30'
               )}
               onClick={() => setCartOpen(true)}
             >
-              <ShoppingBag className="h-5 w-5" strokeWidth={1.25} />
-              {mounted && itemCount > 0 && (
-                <span
-                  className={cn(
-                    'absolute -top-0.5 -right-0.5 flex h-4 min-w-[16px] px-0.5 items-center justify-center text-[9px] font-body font-medium rounded-full tabular-nums',
-                    atopDarkHero ? 'bg-white text-charcoal border border-white/40' : 'bg-charcoal text-white'
-                  )}
-                >
-                  {itemCount}
-                </span>
-              )}
+              <motion.span animate={bagBounceControls} className="inline-flex">
+                <ShoppingBag className="h-5 w-5" strokeWidth={1.25} />
+              </motion.span>
+
+              <AnimatePresence>
+                {mounted && itemCount > 0 && (
+                  <motion.span
+                    key={itemCount}
+                    className={cn(
+                      'absolute -top-0.5 -right-0.5 flex h-4 min-w-[16px] px-0.5 items-center justify-center text-[9px] font-body font-medium rounded-full tabular-nums',
+                      atopDarkHero ? 'bg-white text-charcoal border border-white/40' : 'bg-charcoal text-white'
+                    )}
+                    initial={{ scale: 0.4, opacity: 0 }}
+                    animate={{ scale: [1.7, 0.9, 1], opacity: 1 }}
+                    transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
+                  >
+                    {itemCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </button>
           </div>
         </nav>
@@ -402,6 +425,7 @@ export default function Navbar() {
 
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
       <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      <CartFlyEffect />
     </>
   )
 }

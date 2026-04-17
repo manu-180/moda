@@ -10,8 +10,15 @@ import ProductFilters, { type FilterState } from './ProductFilters'
 import Select from '@/components/ui/Select'
 import Skeleton from '@/components/ui/Skeleton'
 import Button from '@/components/ui/Button'
+import { translateCategory, translateSize, compareClothingSizes } from '@/lib/utils'
 
 const ITEMS_PER_PAGE = 12
+
+/** Misma lógica para el rango mostrado en sliders y para el estado inicial (evita max=5000 con precios en otra escala). */
+function computePriceRange(products: Product[]) {
+  const prices = products.map((p) => p.price)
+  return { min: Math.min(...prices, 0), max: Math.max(...prices, 5000) }
+}
 
 const SORT_OPTIONS = [
   { label: 'Más recientes', value: 'latest' },
@@ -33,13 +40,16 @@ export default function ProductCatalog({
   const searchParams = useSearchParams()
   const categoryParam = searchParams.get('category')
 
-  const [filters, setFilters] = useState<FilterState>({
-    categories: categoryParam ? [categoryParam] : [],
-    sizes: [],
-    colors: [],
-    priceMin: 0,
-    priceMax: 5000,
-    inStockOnly: false,
+  const [filters, setFilters] = useState<FilterState>(() => {
+    const pr = computePriceRange(initialProducts)
+    return {
+      categories: categoryParam ? [categoryParam] : [],
+      sizes: [],
+      colors: [],
+      priceMin: pr.min,
+      priceMax: pr.max,
+      inStockOnly: false,
+    }
   })
 
   const [sortBy, setSortBy] = useState('latest')
@@ -49,7 +59,7 @@ export default function ProductCatalog({
   const availableSizes = useMemo(() => {
     const s = new Set<string>()
     initialProducts.forEach((p) => p.variants?.forEach((v) => s.add(v.size)))
-    return Array.from(s).sort()
+    return Array.from(s).sort(compareClothingSizes)
   }, [initialProducts])
 
   const availableColors = useMemo(() => {
@@ -64,13 +74,10 @@ export default function ProductCatalog({
     }))
   }, [initialProducts])
 
-  const priceRange = useMemo(() => {
-    const prices = initialProducts.map((p) => p.price)
-    return { min: Math.min(...prices, 0), max: Math.max(...prices, 5000) }
-  }, [initialProducts])
+  const priceRange = useMemo(() => computePriceRange(initialProducts), [initialProducts])
 
   const categoryOptions = useMemo(
-    () => categories.map((c) => ({ label: c.name, value: c.slug, count: c.product_count })),
+    () => categories.map((c) => ({ label: translateCategory(c.name), value: c.slug, count: c.product_count })),
     [categories]
   )
 
@@ -82,7 +89,7 @@ export default function ProductCatalog({
       const catIds = categories
         .filter((c) => filters.categories.includes(c.slug))
         .map((c) => c.id)
-      result = result.filter((p) => catIds.includes(p.category_id))
+      result = result.filter((p) => p.category_id && catIds.includes(p.category_id))
     }
     if (filters.sizes.length > 0) {
       result = result.filter((p) => p.variants?.some((v) => filters.sizes.includes(v.size)))
@@ -130,12 +137,17 @@ export default function ProductCatalog({
 
   const activeCategory =
     filters.categories.length === 1
-      ? categories.find((c) => c.slug === filters.categories[0])?.name
+      ? translateCategory(categories.find((c) => c.slug === filters.categories[0])?.name || '')
       : null
+
+  const translatedSizes = useMemo(
+    () => availableSizes.map(size => translateSize(size)),
+    [availableSizes]
+  )
 
   const filterProps = {
     categories: categoryOptions,
-    sizes: availableSizes,
+    sizes: translatedSizes,
     colors: availableColors,
     priceRange,
     filters,

@@ -196,26 +196,44 @@ function FilterContent({
           {formatPrice(filters.priceMin)} — {formatPrice(filters.priceMax)}
         </p>
         <div className="flex flex-col gap-3">
-          <input
-            type="range"
-            min={priceRange.min}
-            max={priceRange.max}
-            value={filters.priceMin}
-            onChange={(e) =>
-              onFilterChange({ ...filters, priceMin: Number(e.target.value) })
-            }
-            className="w-full accent-charcoal"
-          />
-          <input
-            type="range"
-            min={priceRange.min}
-            max={priceRange.max}
-            value={filters.priceMax}
-            onChange={(e) =>
-              onFilterChange({ ...filters, priceMax: Number(e.target.value) })
-            }
-            className="w-full accent-charcoal"
-          />
+          <div className="flex items-center gap-2.5">
+            <span
+              className="shrink-0 w-6 font-body text-[10px] tracking-[0.06em] text-warm-gray/75"
+              aria-hidden
+            >
+              min
+            </span>
+            <input
+              type="range"
+              min={priceRange.min}
+              max={priceRange.max}
+              value={filters.priceMin}
+              onChange={(e) =>
+                onFilterChange({ ...filters, priceMin: Number(e.target.value) })
+              }
+              aria-label="Precio mínimo del rango"
+              className="min-w-0 flex-1 accent-charcoal"
+            />
+          </div>
+          <div className="flex items-center gap-2.5">
+            <span
+              className="shrink-0 w-6 font-body text-[10px] tracking-[0.06em] text-warm-gray/75"
+              aria-hidden
+            >
+              max
+            </span>
+            <input
+              type="range"
+              min={priceRange.min}
+              max={priceRange.max}
+              value={filters.priceMax}
+              onChange={(e) =>
+                onFilterChange({ ...filters, priceMax: Number(e.target.value) })
+              }
+              aria-label="Precio máximo del rango"
+              className="min-w-0 flex-1 accent-charcoal"
+            />
+          </div>
         </div>
       </div>
 

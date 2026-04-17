@@ -4,9 +4,11 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { Heart } from 'lucide-react'
 import type { Product } from '@/types'
 import { useCartStore } from '@/lib/store/cart'
-import { formatPrice, cn } from '@/lib/utils'
+import { useCartAnimationStore } from '@/lib/store/cart-animation'
+import { formatPrice, cn, compareClothingSizes } from '@/lib/utils'
 import {
   productFallbackUrl,
   getPrimaryProductImageUrl,
@@ -29,6 +31,7 @@ export default function ProductCard({
   const [hovered, setHovered] = useState(false)
   const [showSizes, setShowSizes] = useState(false)
   const addItem = useCartStore((s) => s.addItem)
+  const triggerFly = useCartAnimationStore((s) => s.triggerFly)
 
   const db0 = product.images?.[0]?.url?.trim()
   const db1 = product.images?.[1]?.url?.trim()
@@ -64,10 +67,17 @@ export default function ProductCard({
       }
       return acc
     }, [])
+    .sort((a, b) => compareClothingSizes(a.size, b.size))
 
-  function handleQuickAdd(sizeEntry: { size: string; variantId: string }) {
+  function handleQuickAdd(
+    sizeEntry: { size: string; variantId: string },
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) {
     const selectedVariant = product.variants?.find((v) => v.id === sizeEntry.variantId)
     if (selectedVariant) {
+      // Captura el centro del botón como origen de la animación
+      const rect = e.currentTarget.getBoundingClientRect()
+      triggerFly(rect.left + rect.width / 2, rect.top + rect.height / 2)
       addItem(product, selectedVariant, 1)
       setShowSizes(false)
     }
@@ -90,7 +100,7 @@ export default function ProductCard({
       >
         {/* Image container */}
         <Link href={`/products/${product.slug}`} className="block">
-          <div className="relative aspect-[3/4] overflow-hidden bg-cream">
+          <div className="relative aspect-[3/4] overflow-hidden bg-cream shimmer-sweep">
             {/* Primary image — pure crossfade, no zoom (luxury standard) */}
             <Image
               src={img1}
@@ -117,6 +127,29 @@ export default function ProductCard({
               />
             )}
 
+            {/* NEW badge */}
+            {product.is_new && (
+              <div className="absolute top-3 left-3 z-20 font-body text-[9px] uppercase tracking-[0.2em] px-2.5 py-1 text-white"
+                style={{ background: 'var(--color-brand-primary)' }}>
+                Nuevo
+              </div>
+            )}
+
+            {/* Wishlist button */}
+            <button
+              type="button"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation() }}
+              aria-label="Agregar a favoritos"
+              className={cn(
+                'absolute top-3 right-3 z-20 w-8 h-8 flex items-center justify-center',
+                'bg-white/90 backdrop-blur-sm rounded-full border border-pale-gray/40',
+                'transition-all duration-300 ease-luxury',
+                hovered ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+              )}
+            >
+              <Heart className="h-[13px] w-[13px] text-charcoal" strokeWidth={1.5} />
+            </button>
+
             {/* Quick Add overlay — minimal, luxury language */}
             <div
               className={cn(
@@ -131,7 +164,10 @@ export default function ProductCard({
                     e.stopPropagation()
                     setShowSizes(true)
                   }}
-                  className="w-full bg-white/95 py-3 font-body text-[11px] uppercase tracking-[0.15em] text-charcoal hover:bg-white transition-colors duration-200"
+                  className="w-full py-3 font-body text-[11px] uppercase tracking-[0.15em] text-white transition-colors duration-200"
+                  style={{ background: 'var(--color-brand-primary)' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-brand-accent)' }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--color-brand-primary)' }}
                 >
                   Seleccionar talla
                 </button>
@@ -148,7 +184,7 @@ export default function ProductCard({
                       <button
                         key={s.size}
                         disabled={s.stock === 0}
-                        onClick={() => handleQuickAdd(s)}
+                        onClick={(e) => handleQuickAdd(s, e)}
                         className={cn(
                           'min-w-[36px] py-1.5 px-2 font-body text-[11px] border transition-colors duration-200',
                           s.stock === 0

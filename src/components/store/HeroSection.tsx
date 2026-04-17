@@ -36,7 +36,7 @@ export default function HeroSection() {
           className="object-cover object-[center_25%] scale-[1.02]"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-black/55 via-black/35 to-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0e0a07]/70 via-[#16100c]/30 to-[#0c0809]/60" />
         <svg className="absolute inset-0 w-full h-full opacity-[0.035]" xmlns="http://www.w3.org/2000/svg">
           <filter id="hero-noise">
             <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
@@ -49,23 +49,52 @@ export default function HeroSection() {
       {/* Bottom gradient overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.1) 50%, transparent 100%)' }}
+        style={{ background: 'linear-gradient(to top, rgba(14,10,7,0.65) 0%, rgba(0,0,0,0.08) 55%, transparent 100%)' }}
       />
+
+      {/* Decorative rotating diamond ornament — top right */}
+      <motion.div
+        className="absolute top-6 right-6 md:top-12 md:right-14 z-20 pointer-events-none"
+        initial={{ opacity: 0, scale: 0, rotate: 0 }}
+        animate={{ opacity: 0.4, scale: 1, rotate: 45 }}
+        transition={{ delay: 2, duration: 1.4, ease }}
+      >
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+          style={{ originX: '50%', originY: '50%' }}
+        >
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 1 L35 18 L18 35 L1 18 Z" stroke="white" strokeWidth="0.6" fill="none" />
+            <path d="M18 7 L29 18 L18 29 L7 18 Z" stroke="white" strokeWidth="0.4" fill="none" opacity="0.6" />
+            <circle cx="18" cy="18" r="1.8" fill="white" fillOpacity="0.5" />
+          </svg>
+        </motion.div>
+      </motion.div>
 
       {/* Content */}
       <div className="relative z-10 flex h-full min-h-0 flex-col px-6 pb-20 pt-[calc(88px+12px)] max-[480px]:pb-16 md:px-16 md:pb-28 md:pt-[calc(104px+16px)] lg:px-20 lg:pb-32 max-w-[1600px] mx-auto">
         <div className="min-h-0 flex-1" aria-hidden />
         <div className="max-w-2xl shrink-0 pb-[env(safe-area-inset-bottom,0px)]">
-          {/* Season tag */}
+          {/* Season tag with gold accent line */}
           {hero.season_label && (
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 0.7, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8, ease }}
-              className="font-body text-[10px] uppercase tracking-[0.25em] text-white mb-4 md:mb-6"
-            >
-              {hero.season_label}
-            </motion.p>
+            <div className="flex items-center gap-4 mb-5 md:mb-7">
+              <motion.div
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 28, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.9, ease }}
+                className="h-px shrink-0"
+                style={{ background: 'var(--color-brand-primary)' }}
+              />
+              <motion.p
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 0.75, x: 0 }}
+                transition={{ delay: 0.4, duration: 0.8, ease }}
+                className="font-body text-[10px] uppercase tracking-[0.28em] text-white"
+              >
+                {hero.season_label}
+              </motion.p>
+            </div>
           )}
 
           {/* Title — word-by-word stagger */}
@@ -104,9 +133,17 @@ export default function HeroSection() {
             >
               <Link
                 href={hero.cta_href}
-                className="inline-block border border-white/80 text-white font-body text-[11px] uppercase tracking-[0.2em] px-11 py-4 transition-all duration-[500ms] ease-luxury hover:bg-white hover:text-charcoal"
+                className="inline-block relative overflow-hidden border font-body text-[11px] uppercase tracking-[0.2em] px-11 py-4 transition-all duration-[500ms] ease-luxury group"
+                style={{
+                  borderColor: 'rgba(196,162,101,0.8)',
+                  color: 'white',
+                }}
               >
-                {hero.cta_text}
+                <span
+                  className="absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-[500ms] ease-luxury"
+                  style={{ background: 'var(--color-brand-primary)' }}
+                />
+                <span className="relative z-10">{hero.cta_text}</span>
               </Link>
             </motion.div>
           )}

@@ -50,8 +50,8 @@ export default function Tabs({
   return (
     <div className={className}>
       {/* Tab buttons */}
-      <div ref={containerRef} className="relative border-b border-pale-gray">
-        <div className="flex gap-8" role="tablist">
+      <div ref={containerRef} className="relative border-b border-pale-gray overflow-x-auto">
+        <div className="flex gap-6 min-w-max" role="tablist">
           {tabs.map((tab) => (
             <button
               key={tab.id}

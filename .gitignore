@@ -4,3 +4,7 @@ node_modules/
 .env*.local
 *.tsbuildinfo
 next-env.d.ts
+
+# Datos de clientes (contienen keys de Supabase)
+clientes/*.json
+!clientes/_ejemplo.json

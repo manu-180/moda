@@ -17,6 +17,12 @@ async function getAllProducts(): Promise<Product[]> {
     .eq('status', 'active')
     .order('created_at', { ascending: false })
 
+  console.log(
+    'Products sample:',
+    data?.slice(0, 3).map((p) => ({ id: p.id, name: p.name, category_id: p.category_id }))
+  )
+  console.log('Total products:', data?.length)
+
   return (data as Product[]) || []
 }
 

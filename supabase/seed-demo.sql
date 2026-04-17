@@ -419,7 +419,7 @@ INSERT INTO site_settings (key, value) VALUES
 
   -- Contact
   ('contact_phone',     '""'::jsonb),
-  ('contact_email',     '"hola@maisonelara.com"'::jsonb),
+  ('contact_email',     '"info@maisonelara.com"'::jsonb),
   ('contact_whatsapp',  '"https://wa.me/5491124842720"'::jsonb),
   ('contact_hours',     '"Lun–Vie 10–18hs"'::jsonb),
   ('contact_address',   '"Buenos Aires, Argentina"'::jsonb),
