@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { useToast } from '@/components/ui/Toast'
 import type { Order, Address } from '@/types'
 import { formatPrice, formatDate, cn } from '@/lib/utils'
 import Badge from '@/components/ui/Badge'
@@ -29,29 +30,44 @@ interface Props { initialOrder: Order }
 
 export default function OrderDetail({ initialOrder }: Props) {
   const router = useRouter()
+  const { toast } = useToast()
   const [order, setOrder] = useState(initialOrder)
-  const [notes, setNotes] = useState((order as any).notes || '')
+  const [notes, setNotes] = useState((order as Order & { notes?: string }).notes || '')
   const [savingNotes, setSavingNotes] = useState(false)
   const [updatingStatus, setUpdatingStatus] = useState(false)
 
   const address = order.shipping_address as Address | null
-  const currentIdx = STATUS_FLOW.indexOf(order.status as any)
+  const currentIdx = STATUS_FLOW.indexOf(order.status as typeof STATUS_FLOW[number])
   const nextStatus = currentIdx >= 0 && currentIdx < STATUS_FLOW.length - 1
     ? STATUS_FLOW[currentIdx + 1] : null
 
   async function handleStatusUpdate(newStatus: string) {
     setUpdatingStatus(true)
-    const supabase = createClient()
-    await supabase.from('orders').update({ status: newStatus }).eq('id', order.id)
-    setOrder((prev) => ({ ...prev, status: newStatus as Order['status'] }))
-    setUpdatingStatus(false)
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.from('orders').update({ status: newStatus }).eq('id', order.id)
+      if (error) throw error
+      setOrder((prev) => ({ ...prev, status: newStatus as Order['status'] }))
+      toast('Estado actualizado', 'success')
+    } catch (error) {
+      toast(error instanceof Error ? error.message : 'Error al actualizar estado', 'error')
+    } finally {
+      setUpdatingStatus(false)
+    }
   }
 
   async function handleSaveNotes() {
     setSavingNotes(true)
-    const supabase = createClient()
-    await supabase.from('orders').update({ notes }).eq('id', order.id)
-    setSavingNotes(false)
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.from('orders').update({ notes }).eq('id', order.id)
+      if (error) throw error
+      toast('Nota guardada', 'success')
+    } catch (error) {
+      toast(error instanceof Error ? error.message : 'Error al guardar nota', 'error')
+    } finally {
+      setSavingNotes(false)
+    }
   }
 
   // Build timeline from status flow

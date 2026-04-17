@@ -2,16 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   /* 2026 palette — Cloud Dancer + Mocha Mousse (Pantone COTY 2025/2026) */
   --color-ivory: #FAF8F5;
   --color-cream: #F0EEE9;
+  --color-soft-white: #FDFCFA;
   --color-charcoal: #1A1A1A;
   --color-dark-gray: #3D3D3D;
   --color-warm-gray: #8A8A8A;
   --color-pale-gray: #E8E4DF;
   --color-muted-red: #9B1B30;
   --color-deep-forest: #2D5016;
+  --color-rose-blush: #EAD5C8;
+  --color-gold-light: #D4AF7A;
 
   /* Brand colors — overridden per-client via <style> injected in layout.tsx (from site_settings.brand_colors).
      champagne and mocha in tailwind.config.ts reference these vars. */
@@ -20,8 +27,49 @@
 }
 
 ::selection {
-  background-color: var(--color-mocha);
+  background-color: var(--color-brand-primary);
   color: #fff;
+}
+
+/* Gradient text — champagne gold */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #C4A265 0%, #D4AF7A 45%, #A47764 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Centered luxury divider with gradient fade */
+.luxury-divider-center {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--color-brand-primary) 50%, transparent 100%);
+}
+
+/* Champagne shimmer sweep on hover */
+.shimmer-sweep {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-sweep::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(212, 175, 122, 0.10) 55%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  background-position: 200% 0;
+  opacity: 0;
+  transition: opacity 300ms ease, background-position 700ms ease;
+  pointer-events: none;
+  z-index: 2;
+}
+.shimmer-sweep:hover::after {
+  opacity: 1;
+  background-position: -100% 0;
 }
 
 /* Lenis: disable native scroll-behavior — Lenis handles smoothing */

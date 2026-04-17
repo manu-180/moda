@@ -7,7 +7,13 @@ interface RevenueChartProps {
   data: { date: string; revenue: number }[]
 }
 
-function CustomTooltip({ active, payload, label }: any) {
+interface TooltipProps {
+  active?: boolean
+  payload?: { value: number }[]
+  label?: string
+}
+
+function CustomTooltip({ active, payload, label }: TooltipProps) {
   if (!active || !payload?.length) return null
   return (
     <div className="bg-charcoal text-white px-4 py-2.5 font-body text-[12px]">

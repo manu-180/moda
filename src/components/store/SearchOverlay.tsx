@@ -27,6 +27,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const [searched, setSearched] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
+  const latestQueryRef = useRef('')
 
   useEffect(() => {
     if (isOpen) {
@@ -50,6 +51,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
 
   const search = useCallback(async (q: string) => {
     if (q.length < 2) { setResults([]); setSearched(false); return }
+    latestQueryRef.current = q
     const supabase = createClient()
     const { data } = await supabase
       .from('products')
@@ -57,6 +59,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
       .eq('status', 'active')
       .ilike('name', `%${q}%`)
       .limit(12)
+    if (latestQueryRef.current !== q) return
     setResults((data as Product[]) || [])
     setSearched(true)
   }, [])

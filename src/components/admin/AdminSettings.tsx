@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useToast } from '@/components/ui/Toast'
 import Input from '@/components/ui/Input'
 import Textarea from '@/components/ui/Textarea'
 import Select from '@/components/ui/Select'
@@ -29,6 +30,7 @@ function validateHexColor(hex: string): boolean {
 const DEFAULT_ANNOUNCEMENT = { text: '', active: false, link: '' }
 
 export default function AdminSettings({ initialSettings }: Props) {
+  const { toast } = useToast()
   const [settings, setSettings] = useState<Record<string, unknown>>(initialSettings)
   const [dirty, setDirty] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -80,20 +82,34 @@ export default function AdminSettings({ initialSettings }: Props) {
   async function handleSave() {
     const colors = settings['brand_colors'] as Record<string, string> | undefined
     if (colors) {
-      if (!validateHexColor(colors.primary)) throw new Error(`Color primario inválido: "${colors.primary}"`)
-      if (!validateHexColor(colors.accent))  throw new Error(`Color de acento inválido: "${colors.accent}"`)
+      if (!validateHexColor(colors.primary)) {
+        toast(`Color primario inválido: "${colors.primary}"`, 'error')
+        return
+      }
+      if (!validateHexColor(colors.accent)) {
+        toast(`Color de acento inválido: "${colors.accent}"`, 'error')
+        return
+      }
     }
 
-    setSaving(true)
-    const supabase = createClient()
-    for (const [key, value] of Object.entries(settings)) {
-      await supabase.from('site_settings').upsert(
-        { key, value: JSON.stringify(value), updated_at: new Date().toISOString() },
-        { onConflict: 'key' }
+    try {
+      setSaving(true)
+      const supabase = createClient()
+      await Promise.all(
+        Object.entries(settings).map(([key, value]) =>
+          supabase.from('site_settings').upsert(
+            { key, value, updated_at: new Date().toISOString() },
+            { onConflict: 'key' }
+          )
+        )
       )
+      setDirty(false)
+      toast('Configuración guardada', 'success')
+    } catch (error) {
+      toast(error instanceof Error ? error.message : 'Error al guardar', 'error')
+    } finally {
+      setSaving(false)
     }
-    setDirty(false)
-    setSaving(false)
   }
 
   // ── TAB: IDENTIDAD ─────────────────────────────────────────────

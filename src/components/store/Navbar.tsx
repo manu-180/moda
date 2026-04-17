@@ -21,7 +21,7 @@ const NAV_LINKS = [
 
 const CATEGORIES = [
   { label: 'Vestidos', href: '/products?category=dresses' },
-  { label: 'Tops', href: '/products?category=tops' },
+  { label: 'Blusas', href: '/products?category=tops' },
   { label: 'Pantalones', href: '/products?category=bottoms' },
   { label: 'Abrigos', href: '/products?category=outerwear' },
   { label: 'Bolsos', href: '/products?category=bags' },
@@ -168,7 +168,7 @@ export default function Navbar() {
             )}
           >
             {identity.logo_url ? (
-              <img src={identity.logo_url} alt={identity.store_name} className="h-8 w-auto object-contain" />
+              <Image src={identity.logo_url} alt={identity.store_name} width={160} height={32} className="h-8 w-auto object-contain" />
             ) : (
               identity.store_name
             )}
@@ -291,7 +291,7 @@ export default function Navbar() {
             )}
           >
             {identity.logo_url ? (
-              <img src={identity.logo_url} alt={identity.store_name} className="h-7 w-auto object-contain" />
+              <Image src={identity.logo_url} alt={identity.store_name} width={140} height={28} className="h-7 w-auto object-contain" />
             ) : (
               identity.store_name
             )}

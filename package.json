@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "onboard-client": "npx tsx scripts/onboard-client.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -18,12 +19,12 @@
     "embla-carousel-autoplay": "^8.3.1",
     "embla-carousel-react": "^8.3.1",
     "framer-motion": "^11.15.0",
-    "lenis": "^1.3.23",
     "lucide-react": "^0.468.0",
     "next": "14.2.21",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "recharts": "^2.15.4",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^2.6.0",
     "zustand": "^5.0.2"
   },

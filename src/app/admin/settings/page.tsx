@@ -4,8 +4,8 @@ import AdminSettings from '@/components/admin/AdminSettings'
 async function getSettings() {
   const supabase = createClient()
   const { data } = await supabase.from('site_settings').select('*')
-  const map: Record<string, any> = {}
-  data?.forEach((row: any) => { map[row.key] = row.value })
+  const map: Record<string, unknown> = {}
+  data?.forEach((row: { key: string; value: unknown }) => { map[row.key] = row.value })
   return map
 }
 

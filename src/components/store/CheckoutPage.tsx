@@ -76,10 +76,10 @@ export default function CheckoutPageContent() {
   const [errors, setErrors] = useState<FormErrors>({})
   const [submitError, setSubmitError] = useState<string | null>(null)
 
+  const { commerce, identity, contact } = useSiteConfig()
+
   useEffect(() => setMounted(true), [])
   if (!mounted) return null
-
-  const { commerce, identity, contact } = useSiteConfig()
   const subtotal = getTotal()
   const shipping = subtotal >= commerce.free_shipping_threshold ? 0 : commerce.shipping_standard
   const tax = Math.round(subtotal * commerce.tax_rate * 100) / 100
@@ -107,6 +107,7 @@ export default function CheckoutPageContent() {
   }
 
   async function handleSubmit() {
+    if (loading) return
     if (!validate()) return
     setLoading(true)
     setSubmitError(null)

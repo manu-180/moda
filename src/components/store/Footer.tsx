@@ -1,9 +1,8 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Instagram } from 'lucide-react'
-import Button from '@/components/ui/Button'
 import { useSiteConfig } from '@/lib/site-config-context'
 
 const CUSTOMER_CARE = [
@@ -62,18 +61,17 @@ function FacebookIcon({ className }: { className?: string }) {
 
 export default function Footer() {
   const { identity, contact, social, commerce } = useSiteConfig()
-  const [email, setEmail] = useState('')
 
   return (
-    <footer className="bg-cream">
+    <footer className="bg-cream" style={{ borderTop: '1px solid rgba(196,162,101,0.25)' }}>
       <div className="max-w-[1600px] mx-auto px-6 md:px-16 pt-20 pb-10">
         {/* Main grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 text-center md:text-left">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-8 text-center md:text-left">
           {/* Brand */}
           <div className="flex flex-col items-center md:items-start">
             <Link href="/" className="font-display text-[20px] tracking-[0.08em] text-charcoal">
               {identity.logo_url ? (
-                <img src={identity.logo_url} alt={identity.store_name} className="h-8 w-auto object-contain" />
+                <Image src={identity.logo_url} alt={identity.store_name} width={160} height={32} className="h-8 w-auto object-contain" />
               ) : (
                 identity.store_name
               )}
@@ -194,27 +192,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Newsletter */}
-          <div>
-            <h3 className="font-body text-[11px] uppercase tracking-[0.15em] text-warm-gray mb-6">
-              Newsletter
-            </h3>
-            <p className="font-body text-[13px] text-dark-gray mb-5">
-              Enterate primero
-            </p>
-            <div className="flex flex-col gap-3">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Tu correo"
-                className="w-full bg-transparent border-b border-pale-gray pb-2 font-body text-[13px] text-charcoal placeholder:text-warm-gray focus:outline-none focus:border-charcoal transition-colors duration-300"
-              />
-              <Button variant="primary" size="sm" fullWidth onClick={() => setEmail('')}>
-                Suscribirme
-              </Button>
-            </div>
-          </div>
         </div>
 
         {/* Bottom bar */}
