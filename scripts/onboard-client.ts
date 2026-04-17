@@ -97,7 +97,7 @@ async function main() {
     email: config.admin_email,
     password: config.admin_password,
     email_confirm: true,
-    user_metadata: { role: 'admin' },
+    app_metadata: { role: 'admin' },
   })
 
   if (authError) {

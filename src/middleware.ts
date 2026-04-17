@@ -26,10 +26,15 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   // Protect /admin routes
-  if (request.nextUrl.pathname.startsWith('/admin') && !user) {
-    const loginUrl = new URL('/auth/login', request.url)
-    loginUrl.searchParams.set('next', request.nextUrl.pathname)
-    return NextResponse.redirect(loginUrl)
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    if (!user) {
+      const loginUrl = new URL('/auth/login', request.url)
+      loginUrl.searchParams.set('next', request.nextUrl.pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+    if (user.app_metadata?.role !== 'admin') {
+      return NextResponse.redirect(new URL('/', request.url))
+    }
   }
 
   // Redirect authenticated users away from login
