@@ -1,3 +1,5 @@
+export const revalidate = 3600 // re-render cada 1 hora en Vercel (ISR)
+
 import { createClient } from '@/lib/supabase/server'
 import { getSiteConfig } from '@/lib/site-config'
 import type { Product, Category } from '@/types'

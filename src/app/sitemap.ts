@@ -1,3 +1,5 @@
+export const revalidate = 86400 // regenerar sitemap cada 24h
+
 import { MetadataRoute } from 'next'
 import { createClient } from '@/lib/supabase/server'
 

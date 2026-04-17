@@ -1,3 +1,5 @@
+export const revalidate = 1800 // re-render cada 30 min en Vercel (ISR)
+
 import { createClient } from '@/lib/supabase/server'
 import type { Product, Category } from '@/types'
 import ProductCatalog from '@/components/store/ProductCatalog'
@@ -20,25 +22,21 @@ async function getAllProducts(): Promise<Product[]> {
 
 async function getCategories(): Promise<(Category & { product_count: number })[]> {
   const supabase = createClient()
-  const { data: categories } = await supabase
-    .from('categories')
-    .select('*')
-    .order('position')
+
+  // 2 queries en lugar de N+1: categorías + IDs de productos activos
+  const [{ data: categories }, { data: activeCategoryIds }] = await Promise.all([
+    supabase.from('categories').select('*').order('position'),
+    supabase.from('products').select('category_id').eq('status', 'active'),
+  ])
 
   if (!categories) return []
 
-  const withCounts = await Promise.all(
-    categories.map(async (cat) => {
-      const { count } = await supabase
-        .from('products')
-        .select('*', { count: 'exact', head: true })
-        .eq('category_id', cat.id)
-        .eq('status', 'active')
-      return { ...cat, product_count: count || 0 }
-    })
-  )
+  const countMap = (activeCategoryIds ?? []).reduce<Record<string, number>>((acc, { category_id }) => {
+    if (category_id) acc[category_id] = (acc[category_id] ?? 0) + 1
+    return acc
+  }, {})
 
-  return withCounts
+  return categories.map((cat) => ({ ...cat, product_count: countMap[cat.id] ?? 0 }))
 }
 
 export default async function ProductsPage() {
