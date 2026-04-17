@@ -193,32 +193,41 @@ CREATE POLICY "Public read product_variants" ON product_variants FOR SELECT USIN
 CREATE POLICY "Anon can create orders"      ON orders      FOR INSERT WITH CHECK (true);
 CREATE POLICY "Anon can create order_items" ON order_items FOR INSERT WITH CHECK (true);
 
--- Orders: authenticated can read/update
-CREATE POLICY "Auth read orders"       ON orders      FOR SELECT TO authenticated USING (true);
-CREATE POLICY "Auth update orders"     ON orders      FOR UPDATE TO authenticated USING (true);
-CREATE POLICY "Auth read order_items"  ON order_items FOR SELECT TO authenticated USING (true);
+-- Helper: is_admin() — checks app_metadata (server-only, not user-modifiable)
+CREATE OR REPLACE FUNCTION is_admin()
+RETURNS boolean
+LANGUAGE sql
+STABLE
+AS $$
+  SELECT (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
+$$;
+
+-- Orders: admin only
+CREATE POLICY "Admin read orders"       ON orders      FOR SELECT TO authenticated USING (is_admin());
+CREATE POLICY "Admin update orders"     ON orders      FOR UPDATE TO authenticated USING (is_admin());
+CREATE POLICY "Admin read order_items"  ON order_items FOR SELECT TO authenticated USING (is_admin());
 
 -- Admin CRUD on catalog
-CREATE POLICY "Auth insert categories"        ON categories        FOR INSERT TO authenticated WITH CHECK (true);
-CREATE POLICY "Auth update categories"        ON categories        FOR UPDATE TO authenticated USING (true);
-CREATE POLICY "Auth delete categories"        ON categories        FOR DELETE TO authenticated USING (true);
-CREATE POLICY "Auth insert collections"       ON collections       FOR INSERT TO authenticated WITH CHECK (true);
-CREATE POLICY "Auth update collections"       ON collections       FOR UPDATE TO authenticated USING (true);
-CREATE POLICY "Auth delete collections"       ON collections       FOR DELETE TO authenticated USING (true);
-CREATE POLICY "Auth insert products"          ON products          FOR INSERT TO authenticated WITH CHECK (true);
-CREATE POLICY "Auth update products"          ON products          FOR UPDATE TO authenticated USING (true);
-CREATE POLICY "Auth delete products"          ON products          FOR DELETE TO authenticated USING (true);
-CREATE POLICY "Auth insert product_images"    ON product_images    FOR INSERT TO authenticated WITH CHECK (true);
-CREATE POLICY "Auth update product_images"    ON product_images    FOR UPDATE TO authenticated USING (true);
-CREATE POLICY "Auth delete product_images"    ON product_images    FOR DELETE TO authenticated USING (true);
-CREATE POLICY "Auth insert product_variants"  ON product_variants  FOR INSERT TO authenticated WITH CHECK (true);
-CREATE POLICY "Auth update product_variants"  ON product_variants  FOR UPDATE TO authenticated USING (true);
-CREATE POLICY "Auth delete product_variants"  ON product_variants  FOR DELETE TO authenticated USING (true);
+CREATE POLICY "Admin insert categories"        ON categories        FOR INSERT TO authenticated WITH CHECK (is_admin());
+CREATE POLICY "Admin update categories"        ON categories        FOR UPDATE TO authenticated USING (is_admin());
+CREATE POLICY "Admin delete categories"        ON categories        FOR DELETE TO authenticated USING (is_admin());
+CREATE POLICY "Admin insert collections"       ON collections       FOR INSERT TO authenticated WITH CHECK (is_admin());
+CREATE POLICY "Admin update collections"       ON collections       FOR UPDATE TO authenticated USING (is_admin());
+CREATE POLICY "Admin delete collections"       ON collections       FOR DELETE TO authenticated USING (is_admin());
+CREATE POLICY "Admin insert products"          ON products          FOR INSERT TO authenticated WITH CHECK (is_admin());
+CREATE POLICY "Admin update products"          ON products          FOR UPDATE TO authenticated USING (is_admin());
+CREATE POLICY "Admin delete products"          ON products          FOR DELETE TO authenticated USING (is_admin());
+CREATE POLICY "Admin insert product_images"    ON product_images    FOR INSERT TO authenticated WITH CHECK (is_admin());
+CREATE POLICY "Admin update product_images"    ON product_images    FOR UPDATE TO authenticated USING (is_admin());
+CREATE POLICY "Admin delete product_images"    ON product_images    FOR DELETE TO authenticated USING (is_admin());
+CREATE POLICY "Admin insert product_variants"  ON product_variants  FOR INSERT TO authenticated WITH CHECK (is_admin());
+CREATE POLICY "Admin update product_variants"  ON product_variants  FOR UPDATE TO authenticated USING (is_admin());
+CREATE POLICY "Admin delete product_variants"  ON product_variants  FOR DELETE TO authenticated USING (is_admin());
 
 -- Site settings
-CREATE POLICY "Public read site_settings" ON site_settings FOR SELECT USING (true);
-CREATE POLICY "Auth update site_settings" ON site_settings FOR UPDATE TO authenticated USING (true);
-CREATE POLICY "Auth insert site_settings" ON site_settings FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "Public read site_settings"  ON site_settings FOR SELECT USING (true);
+CREATE POLICY "Admin update site_settings" ON site_settings FOR UPDATE TO authenticated USING (is_admin());
+CREATE POLICY "Admin insert site_settings" ON site_settings FOR INSERT TO authenticated WITH CHECK (is_admin());
 
 
 -- ============================================================
@@ -231,14 +240,14 @@ INSERT INTO storage.buckets (id, name, public) VALUES ('collections', 'collectio
 
 -- Products bucket policies
 CREATE POLICY "Public read products bucket"  ON storage.objects FOR SELECT                   USING (bucket_id = 'products');
-CREATE POLICY "Auth upload products bucket"  ON storage.objects FOR INSERT TO authenticated  WITH CHECK (bucket_id = 'products');
-CREATE POLICY "Auth update products bucket"  ON storage.objects FOR UPDATE TO authenticated  USING (bucket_id = 'products');
-CREATE POLICY "Auth delete products bucket"  ON storage.objects FOR DELETE TO authenticated  USING (bucket_id = 'products');
+CREATE POLICY "Admin upload products bucket"    ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'products'    AND is_admin());
+CREATE POLICY "Admin update products bucket"    ON storage.objects FOR UPDATE TO authenticated USING  (bucket_id = 'products'    AND is_admin());
+CREATE POLICY "Admin delete products bucket"    ON storage.objects FOR DELETE TO authenticated USING  (bucket_id = 'products'    AND is_admin());
 
 -- Categories bucket policies
-CREATE POLICY "Public read categories bucket"  ON storage.objects FOR SELECT                  USING (bucket_id = 'categories');
-CREATE POLICY "Auth upload categories bucket"  ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'categories');
+CREATE POLICY "Public read categories bucket"   ON storage.objects FOR SELECT                  USING  (bucket_id = 'categories');
+CREATE POLICY "Admin upload categories bucket"  ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'categories'  AND is_admin());
 
 -- Collections bucket policies
-CREATE POLICY "Public read collections bucket"  ON storage.objects FOR SELECT                  USING (bucket_id = 'collections');
-CREATE POLICY "Auth upload collections bucket"  ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'collections');
+CREATE POLICY "Public read collections bucket"  ON storage.objects FOR SELECT                  USING  (bucket_id = 'collections');
+CREATE POLICY "Admin upload collections bucket" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'collections' AND is_admin());
