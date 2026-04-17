@@ -1,0 +1,202 @@
+- generic [active] [ref=e1]:
+  - link "Ir al contenido" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - link "Saltar al contenido" [ref=e4] [cursor=pointer]:
+      - /url: "#contenido-tienda"
+    - banner [ref=e5]:
+      - paragraph [ref=e7]: Nueva temporada · Envío gratuito en compras superiores a $200.000
+      - navigation "Principal" [ref=e8]:
+        - generic [ref=e9]:
+          - link "NOVEDADES" [ref=e11] [cursor=pointer]:
+            - /url: /collections/new-arrivals
+            - text: NOVEDADES
+          - link "COLECCIONES" [ref=e13] [cursor=pointer]:
+            - /url: /collections
+            - text: COLECCIONES
+          - link "TIENDA" [ref=e15] [cursor=pointer]:
+            - /url: /products
+            - text: TIENDA
+        - link "MAISON ÉLARA" [ref=e16] [cursor=pointer]:
+          - /url: /
+        - generic [ref=e17]:
+          - button "Buscar" [ref=e18] [cursor=pointer]:
+            - img [ref=e19]
+          - button "Favoritos" [ref=e23] [cursor=pointer]:
+            - img [ref=e24]
+          - button "Bolsa de compras" [ref=e26] [cursor=pointer]:
+            - img [ref=e27]
+          - link "Cuenta" [ref=e31] [cursor=pointer]:
+            - /url: /auth/login
+            - img [ref=e32]
+    - main [ref=e35]:
+      - generic [ref=e36]:
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - img "Colección Maison Élara — moda contemporánea" [ref=e39]
+            - img [ref=e41]
+          - generic [ref=e44]:
+            - paragraph [ref=e45]: Colección 2026
+            - heading "El arte del lujo silencioso." [level=1] [ref=e46]:
+              - generic [ref=e47]: El
+              - generic [ref=e48]: arte
+              - generic [ref=e49]: del
+              - generic [ref=e50]: lujo
+              - generic [ref=e51]: silencioso.
+            - paragraph [ref=e52]: Piezas atemporales. Craftsmanship sin concesiones.
+            - link "Descubrir la colección" [ref=e54] [cursor=pointer]:
+              - /url: /collections/autumn-whisper
+          - generic [ref=e57]: Deslizá
+        - generic [ref=e59]:
+          - heading "Donde la artesanía encuentra la visión contemporánea" [level=2] [ref=e60]
+          - paragraph [ref=e61]: Cada pieza es un homenaje al arte de vestir — diseñada en Buenos Aires, pensada para el mundo.
+        - generic [ref=e64]:
+          - heading "Novedades." [level=2] [ref=e66]
+          - link "Ver todo" [ref=e68] [cursor=pointer]:
+            - /url: /collections/new-arrivals
+            - generic [ref=e69]: Ver todo
+        - generic [ref=e71]:
+          - generic [ref=e73]:
+            - img "Colección Autumn Whisper — siluetas de otoño" [ref=e74]
+            - img [ref=e76]
+          - generic [ref=e79]:
+            - paragraph [ref=e80]: FW25 Collection
+            - heading "Autumn Whisper" [level=2] [ref=e81]
+            - paragraph [ref=e82]: Una colección inspirada en la quietud de los amaneceres de otoño. Siluetas suaves, texturas profundas y una paleta tomada de las hojas caídas y los horizontes brumosos.
+            - link "Explorar la colección" [ref=e84] [cursor=pointer]:
+              - /url: /collections/autumn-whisper
+              - button "Explorar la colección" [ref=e85]:
+                - generic [ref=e86]: Explorar la colección
+        - heading "Comprar por categoría" [level=2] [ref=e90]
+        - generic [ref=e93]:
+          - paragraph [ref=e94]: Como en
+          - generic [ref=e95]:
+            - generic [ref=e96]: VOGUE
+            - generic [ref=e97]: ELLE
+            - generic [ref=e98]: HARPER'S BAZAAR
+            - generic [ref=e99]: W MAGAZINE
+            - generic [ref=e100]: L'OFFICIEL
+          - generic [ref=e101]:
+            - blockquote [ref=e102]: “Maison Élara representa una nueva ola de lujo sudamericano — donde el oficio europeo encuentra el alma latinoamericana.”
+            - paragraph [ref=e103]: — Vogue, marzo 2026
+        - generic [ref=e104]:
+          - generic [ref=e105]:
+            - img [ref=e106]
+            - generic [ref=e109]: Seguinos @maisonelara
+          - generic [ref=e110]:
+            - link "Crop top amarillo — look urbano contemporáneo Ver publicación" [ref=e111] [cursor=pointer]:
+              - /url: https://instagram.com/maisonelara
+              - img "Crop top amarillo — look urbano contemporáneo" [ref=e112]
+              - generic [ref=e114]:
+                - img [ref=e115]
+                - generic [ref=e118]: Ver publicación
+            - link "Tacones con estampado floral — calzado de lujo Ver publicación" [ref=e119] [cursor=pointer]:
+              - /url: https://instagram.com/maisonelara
+              - img "Tacones con estampado floral — calzado de lujo" [ref=e120]
+              - generic [ref=e122]:
+                - img [ref=e123]
+                - generic [ref=e126]: Ver publicación
+            - link "Bolso de piel naranja — accesorio premium Ver publicación" [ref=e127] [cursor=pointer]:
+              - /url: https://instagram.com/maisonelara
+              - img "Bolso de piel naranja — accesorio premium" [ref=e128]
+              - generic [ref=e130]:
+                - img [ref=e131]
+                - generic [ref=e134]: Ver publicación
+            - link "Vestido verde y gafas — street style verano Ver publicación" [ref=e135] [cursor=pointer]:
+              - /url: https://instagram.com/maisonelara
+              - img "Vestido verde y gafas — street style verano" [ref=e136]
+              - generic [ref=e138]:
+                - img [ref=e139]
+                - generic [ref=e142]: Ver publicación
+            - link "Street style Milán — abrigo azul frente al Duomo Ver publicación" [ref=e143] [cursor=pointer]:
+              - /url: https://instagram.com/maisonelara
+              - img "Street style Milán — abrigo azul frente al Duomo" [ref=e144]
+              - generic [ref=e146]:
+                - img [ref=e147]
+                - generic [ref=e150]: Ver publicación
+            - link "Vestido floral — look de playa sofisticado Ver publicación" [ref=e151] [cursor=pointer]:
+              - /url: https://instagram.com/maisonelara
+              - img "Vestido floral — look de playa sofisticado" [ref=e152]
+              - generic [ref=e154]:
+                - img [ref=e155]
+                - generic [ref=e158]: Ver publicación
+        - generic [ref=e161]:
+          - heading "Recibí nuestras cartas." [level=2] [ref=e162]
+          - paragraph [ref=e163]: Acceso anticipado a colecciones. Eventos privados. Historias de la casa.
+          - generic [ref=e164]:
+            - generic [ref=e165]:
+              - textbox "Tu correo electrónico" [ref=e166]
+              - button "Unirme" [ref=e167] [cursor=pointer]
+            - paragraph [ref=e168]: Al suscribirte, aceptás nuestra política de privacidad.
+    - contentinfo [ref=e169]:
+      - generic [ref=e170]:
+        - generic [ref=e171]:
+          - generic [ref=e172]:
+            - link "MAISON ÉLARA" [ref=e173] [cursor=pointer]:
+              - /url: /
+            - paragraph [ref=e174]: Lujo contemporáneo desde Buenos Aires
+            - generic [ref=e175]:
+              - link "Instagram" [ref=e176] [cursor=pointer]:
+                - /url: https://instagram.com
+                - img [ref=e177]
+              - link "Pinterest" [ref=e180] [cursor=pointer]:
+                - /url: https://pinterest.com
+                - img [ref=e181]
+              - link "X" [ref=e183] [cursor=pointer]:
+                - /url: https://x.com
+                - img [ref=e184]
+              - link "WhatsApp" [ref=e186] [cursor=pointer]:
+                - /url: https://wa.me/5491124842720
+                - img [ref=e187]
+          - generic [ref=e189]:
+            - heading "Atención al cliente" [level=3] [ref=e190]
+            - list [ref=e191]:
+              - listitem [ref=e192]:
+                - link "Contacto" [ref=e193] [cursor=pointer]:
+                  - /url: /contact
+                  - generic [ref=e194]: Contacto
+              - listitem [ref=e195]:
+                - link "Envíos y devoluciones" [ref=e196] [cursor=pointer]:
+                  - /url: /shipping-returns
+                  - generic [ref=e197]: Envíos y devoluciones
+              - listitem [ref=e198]:
+                - link "Guía de talles" [ref=e199] [cursor=pointer]:
+                  - /url: /size-guide
+                  - generic [ref=e200]: Guía de talles
+              - listitem [ref=e201]:
+                - link "Preguntas frecuentes" [ref=e202] [cursor=pointer]:
+                  - /url: /faq
+                  - generic [ref=e203]: Preguntas frecuentes
+          - generic [ref=e204]:
+            - heading "Nosotros" [level=3] [ref=e205]
+            - list [ref=e206]:
+              - listitem [ref=e207]:
+                - link "Nuestra historia" [ref=e208] [cursor=pointer]:
+                  - /url: /about
+                  - generic [ref=e209]: Nuestra historia
+              - listitem [ref=e210]:
+                - link "Atelier" [ref=e211] [cursor=pointer]:
+                  - /url: /atelier
+                  - generic [ref=e212]: Atelier
+              - listitem [ref=e213]:
+                - link "Sostenibilidad" [ref=e214] [cursor=pointer]:
+                  - /url: /sustainability
+                  - generic [ref=e215]: Sostenibilidad
+              - listitem [ref=e216]:
+                - link "Prensa" [ref=e217] [cursor=pointer]:
+                  - /url: /press
+                  - generic [ref=e218]: Prensa
+          - generic [ref=e219]:
+            - heading "Newsletter" [level=3] [ref=e220]
+            - paragraph [ref=e221]: Enterate primero
+            - generic [ref=e222]:
+              - textbox "Tu correo" [ref=e223]
+              - button "Suscribirme" [ref=e224] [cursor=pointer]:
+                - generic [ref=e225]: Suscribirme
+        - generic [ref=e226]:
+          - paragraph [ref=e227]: © 2026 MAISON ÉLARA. Todos los derechos reservados.
+          - generic [ref=e228]:
+            - link "Política de privacidad" [ref=e229] [cursor=pointer]:
+              - /url: /privacy
+            - link "Términos" [ref=e230] [cursor=pointer]:
+              - /url: /terms

@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* 2026 palette — Cloud Dancer + Mocha Mousse (Pantone COTY 2025/2026) */
+  --color-ivory: #FAF8F5;
+  --color-cream: #F0EEE9;
+  --color-charcoal: #1A1A1A;
+  --color-dark-gray: #3D3D3D;
+  --color-warm-gray: #8A8A8A;
+  --color-pale-gray: #E8E4DF;
+  --color-muted-red: #9B1B30;
+  --color-deep-forest: #2D5016;
+
+  /* Brand colors — overridden per-client via <style> injected in layout.tsx (from site_settings.brand_colors).
+     champagne and mocha in tailwind.config.ts reference these vars. */
+  --color-brand-primary: #C4A265;
+  --color-brand-accent: #A47764;
+}
+
+::selection {
+  background-color: var(--color-mocha);
+  color: #fff;
+}
+
+/* Lenis: disable native scroll-behavior — Lenis handles smoothing */
+html {
+  scroll-behavior: auto;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus visible */
+*:focus-visible {
+  outline: 1.5px solid var(--color-mocha);
+  outline-offset: 3px;
+}
+
+/* Font variables from next/font */
+.font-display {
+  font-family: var(--font-bodoni), 'Bodoni Moda', serif;
+}
+
+.font-body {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+}
+
+/* Scrollbar — ultra subtle, luxury aesthetic */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-pale-gray);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-warm-gray);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-pale-gray) transparent;
+}
