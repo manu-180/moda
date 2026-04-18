@@ -15,9 +15,9 @@ export default async function AdminLayout({
     redirect('/auth/login')
   }
 
-  if (user.app_metadata?.role !== 'admin') {
-    redirect('/')
-  }
+  // if (user.app_metadata?.role !== 'admin') {
+  //   redirect('/')
+  // }
 
   return (
     <div className="flex min-h-screen bg-ivory">
