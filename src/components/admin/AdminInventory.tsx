@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Image from 'next/image'
-import { Search, AlertTriangle, Check, X, ChevronDown, ChevronRight, Package, AlertCircle, PackageX, Layers } from 'lucide-react'
+import { Search, AlertTriangle, Check, X, ChevronDown, ChevronRight } from 'lucide-react'
 import type { Product, Category, ProductVariant } from '@/types'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
@@ -197,10 +197,10 @@ export default function AdminInventory({ products, categories }: Props) {
     <div>
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatsCard label="SKUs totales" value={String(stats.total)} icon={Layers} accentColor="#1A1A1A" index={0} />
-        <StatsCard label="En stock" value={String(stats.inStock)} icon={Package} accentColor="#2D5016" index={1} />
-        <StatsCard label="Stock bajo" value={String(stats.low)} icon={AlertCircle} accentColor="#C4A265" index={2} />
-        <StatsCard label="Sin stock" value={String(stats.out)} icon={PackageX} accentColor="#9B1B30" index={3} />
+        <StatsCard label="SKUs totales" value={String(stats.total)} icon="Layers" accentColor="#1A1A1A" index={0} />
+        <StatsCard label="En stock" value={String(stats.inStock)} icon="Package" accentColor="#2D5016" index={1} />
+        <StatsCard label="Stock bajo" value={String(stats.low)} icon="AlertCircle" accentColor="#C4A265" index={2} />
+        <StatsCard label="Sin stock" value={String(stats.out)} icon="PackageX" accentColor="#9B1B30" index={3} />
       </div>
 
       {/* Low stock alert */}

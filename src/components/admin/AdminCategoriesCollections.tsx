@@ -64,8 +64,6 @@ function CategoryForm({
       <div className="space-y-5">
         <Input label="Nombre" id="cat-name" value={name}
           onChange={(e) => { setName(e.target.value); if (!category) setSlug(slugify(e.target.value)) }} />
-        <Input label="Slug" id="cat-slug" value={slug}
-          onChange={(e) => setSlug(e.target.value)} />
         <Textarea label="Descripción" id="cat-desc" value={description}
           onChange={(e) => setDescription(e.target.value)} autoResize />
         <Select label="Categoría padre" options={parentOptions} value={parentId}
@@ -115,8 +113,6 @@ function CollectionFormModal({
       <div className="space-y-5">
         <Input label="Nombre" id="col-name" value={name}
           onChange={(e) => { setName(e.target.value); if (!collection) setSlug(slugify(e.target.value)) }} />
-        <Input label="Slug" id="col-slug" value={slug}
-          onChange={(e) => setSlug(e.target.value)} />
         <Textarea label="Descripción" id="col-desc" value={description}
           onChange={(e) => setDescription(e.target.value)} autoResize />
         <Input label="Temporada (ej. FW25)" id="col-season" value={season}

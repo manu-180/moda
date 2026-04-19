@@ -1,5 +1,4 @@
 import { createClient } from '@/lib/supabase/server'
-import { DollarSign, ShoppingBag, BarChart3 } from 'lucide-react'
 import type { Order } from '@/types'
 import StatsCard from '@/components/admin/StatsCard'
 import RevenueChart from '@/components/admin/RevenueChart'
@@ -88,9 +87,9 @@ export default async function AdminDashboard() {
     <div className="space-y-6">
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <StatsCard label="Ingresos totales" value={`$${Math.round(data.totalRevenue).toLocaleString('es-AR')}`} icon={DollarSign} accentColor="#C4A265" index={0} />
-        <StatsCard label="Pedidos" value={String(data.orderCount)} icon={ShoppingBag} accentColor="#1A1A1A" index={1} />
-        <StatsCard label="Ticket promedio" value={`$${Math.round(data.avgOrderValue)}`} icon={BarChart3} accentColor="#2D5016" index={2} />
+        <StatsCard label="Ingresos totales" value={`$${Math.round(data.totalRevenue).toLocaleString('es-AR')}`} icon="DollarSign" accentColor="#C4A265" index={0} />
+        <StatsCard label="Pedidos" value={String(data.orderCount)} icon="ShoppingBag" accentColor="#1A1A1A" index={1} />
+        <StatsCard label="Ticket promedio" value={`$${Math.round(data.avgOrderValue)}`} icon="BarChart3" accentColor="#2D5016" index={2} />
       </div>
 
       {/* Revenue chart */}

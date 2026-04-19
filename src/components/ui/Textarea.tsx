@@ -13,7 +13,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, label, error, autoResize = false, id, onFocus, onBlur, onChange, value, ...props }, ref) => {
     const [focused, setFocused] = useState(false)
     const hasValue = value !== undefined ? String(value).length > 0 : false
-    const isActive = focused || hasValue
+    const isActive = focused || hasValue || !!props.placeholder
     const internalRef = useRef<HTMLTextAreaElement>(null)
     const textareaRef = (ref as React.RefObject<HTMLTextAreaElement>) || internalRef
 

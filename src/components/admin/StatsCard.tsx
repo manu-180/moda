@@ -2,22 +2,36 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { TrendingUp, TrendingDown } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
+import { TrendingUp, TrendingDown, DollarSign, ShoppingBag, BarChart3, Package, Users, Tag, Layers, AlertCircle, PackageX } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+const iconMap = {
+  DollarSign,
+  ShoppingBag,
+  BarChart3,
+  Package,
+  Users,
+  Tag,
+  Layers,
+  AlertCircle,
+  PackageX,
+} as const
+
+export type StatsIconName = keyof typeof iconMap
 
 interface StatsCardProps {
   label: string
   value: string
   trend?: number
-  icon: LucideIcon
+  icon: StatsIconName
   accentColor?: string
   index?: number
 }
 
 const ease = [0.25, 0.1, 0.25, 1] as const
 
-export default function StatsCard({ label, value, trend, icon: Icon, accentColor = '#C4A265', index = 0 }: StatsCardProps) {
+export default function StatsCard({ label, value, trend, icon, accentColor = '#C4A265', index = 0 }: StatsCardProps) {
+  const Icon = iconMap[icon]
   // Animate number from 0
   const numericValue = parseFloat(value.replace(/[^0-9.]/g, ''))
   const prefix = value.match(/^[^0-9]*/)?.[0] || ''

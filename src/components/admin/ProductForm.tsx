@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Plus, Trash2, AlertCircle } from 'lucide-react'
 import type { Product, Category, Collection } from '@/types'
-import { createClient } from '@/lib/supabase/client'
 import { deleteProductImage } from '@/lib/supabase/storage'
+import { saveProductAction } from '@/app/admin/products/actions'
 import { slugify, cn } from '@/lib/utils'
 import Input from '@/components/ui/Input'
 import Textarea from '@/components/ui/Textarea'
@@ -121,7 +121,6 @@ export default function ProductForm({ product, categories, collections }: Produc
     if (!validate()) return
     setSaving(true)
     setSaveError(null)
-    const supabase = createClient()
 
     const productData = {
       name, slug, description,
@@ -132,104 +131,33 @@ export default function ProductForm({ product, categories, collections }: Produc
       status, is_featured: isFeatured, is_new: isNewArrival,
     }
 
-    try {
-      let productId = product?.id
+    const result = await saveProductAction({
+      productId: product?.id,
+      productData,
+      variants,
+      images,
+      originalVariantIds: Array.from(originalVariantIdsRef.current),
+      isNew,
+    })
 
-      // 1) UPSERT del producto
-      if (isNew) {
-        const { data, error } = await supabase.from('products').insert(productData).select().single()
-        if (error) throw error
-        productId = data.id
-      } else {
-        const { error } = await supabase.from('products').update(productData).eq('id', productId)
-        if (error) throw error
-      }
-
-      // 2) DIFF de variantes (preserva IDs existentes → no rompe carritos persistidos)
-      const currentIdsInForm = new Set(
-        variants.filter((v) => v.id).map((v) => v.id as string)
-      )
-      const deletedVariantIds = Array.from(originalVariantIdsRef.current)
-        .filter((id) => !currentIdsInForm.has(id))
-
-      const defaultSku = (v: VariantRow) =>
-        v.sku || `ME-${slug.toUpperCase().slice(0, 4)}-${v.size}-${v.color.slice(0, 3).toUpperCase()}`
-
-      // 2a) Soft-delete variantes removidas del form
-      if (deletedVariantIds.length > 0) {
-        const { error } = await supabase
-          .from('product_variants')
-          .update({ is_active: false })
-          .in('id', deletedVariantIds)
-        if (error) throw error
-      }
-
-      // 2b) UPDATE variantes existentes (mantiene ID)
-      const toUpdate = variants.filter((v) => v.id)
-      for (const v of toUpdate) {
-        const { error } = await supabase
-          .from('product_variants')
-          .update({
-            size: v.size,
-            color: v.color,
-            color_hex: v.color_hex,
-            stock: v.stock,
-            sku: defaultSku(v),
-            is_active: true,
-          })
-          .eq('id', v.id as string)
-        if (error) throw error
-      }
-
-      // 2c) INSERT variantes nuevas
-      const toInsert = variants.filter((v) => !v.id).map((v) => ({
-        product_id: productId,
-        size: v.size,
-        color: v.color,
-        color_hex: v.color_hex,
-        stock: v.stock,
-        sku: defaultSku(v),
-        is_active: true,
-      }))
-      if (toInsert.length > 0) {
-        const { error } = await supabase.from('product_variants').insert(toInsert)
-        if (error) throw error
-      }
-
-      // 3) DIFF de imágenes — por ahora mantenemos estrategia simple
-      //    (delete + insert por orden/position), pero solo tocando product_images
-      //    que es una tabla sin referencias externas críticas.
-      if (!isNew) {
-        await supabase.from('product_images').delete().eq('product_id', productId)
-      }
-      if (images.length > 0) {
-        const imageRows = images.map((img, index) => ({
-          product_id: productId,
-          url: img.url,          // FIX: columna real es `url`
-          alt: name,             // alt por defecto = nombre del producto
-          position: index,
-        }))
-        const { error: imagesError } = await supabase.from('product_images').insert(imageRows)
-        if (imagesError) throw imagesError
-      }
-
-      // 4) Cleanup de storage: borrar del bucket las imágenes quitadas del form
-      const currentUrls = new Set(images.map((i) => i.url))
-      const removedUrls = Array.from(originalImageUrlsRef.current)
-        .filter((url) => !currentUrls.has(url))
-      await Promise.all(
-        removedUrls.map((url) =>
-          deleteProductImage(url).catch((e) => console.error('Cleanup bucket error:', e))
-        )
-      )
-
-      router.push('/admin/products')
-      router.refresh()
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Error desconocido al guardar'
-      setSaveError(message)
+    if ('error' in result) {
+      setSaveError(result.error)
       setSaving(false)
+      return
     }
+
+    // Cleanup de storage: borrar del bucket las imágenes quitadas del form
+    const currentUrls = new Set(images.map((i) => i.url))
+    const removedUrls = Array.from(originalImageUrlsRef.current)
+      .filter((url) => !currentUrls.has(url))
+    await Promise.all(
+      removedUrls.map((url) =>
+        deleteProductImage(url).catch((e) => console.error('Cleanup bucket error:', e))
+      )
+    )
+
+    router.push('/admin/products')
+    router.refresh()
   }
 
   async function handleDiscard() {
@@ -271,8 +199,6 @@ export default function ProductForm({ product, categories, collections }: Produc
             <div className="space-y-5">
               <Input label="Nombre del producto" id="name" value={name}
                 onChange={(e) => setName(e.target.value)} error={errors.name} />
-              <Input label="Slug" id="slug" value={slug}
-                onChange={(e) => setSlug(e.target.value)} />
               <Textarea label="Descripción" id="description" value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Una descripción que invite a comprar…" autoResize />
@@ -308,6 +234,7 @@ export default function ProductForm({ product, categories, collections }: Produc
                     onChange={(e) => updateVariant(i, 'color_hex', e.target.value)}
                     className="h-[38px] w-full border border-pale-gray rounded cursor-pointer bg-white" />
                   <input type="number" min="0" value={v.stock}
+                    onFocus={(e) => e.target.select()}
                     onChange={(e) => updateVariant(i, 'stock', parseInt(e.target.value) || 0)}
                     className="border border-pale-gray px-3 py-2 font-body text-[13px] bg-white rounded focus:outline-none focus:border-charcoal" />
                   <input value={v.sku}
@@ -345,9 +272,9 @@ export default function ProductForm({ product, categories, collections }: Produc
           <div className="bg-white border border-pale-gray rounded-lg p-6">
             <h3 className="font-body text-[12px] uppercase tracking-[0.08em] text-warm-gray mb-5">Precios</h3>
             <div className="space-y-5">
-              <Input label="Precio (USD)" id="price" type="number" value={price}
+              <Input label="Precio" id="price" type="number" value={price}
                 onChange={(e) => setPrice(e.target.value)} error={errors.price} />
-              <Input label="Precio tachado (USD)" id="comparePrice" type="number" value={comparePrice}
+              <Input label="Precio tachado" id="comparePrice" type="number" value={comparePrice}
                 onChange={(e) => setComparePrice(e.target.value)} />
               {discount && discount > 0 && (
                 <p className="font-body text-[12px] text-deep-forest">{discount}% de descuento</p>

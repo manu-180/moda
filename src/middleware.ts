@@ -32,9 +32,10 @@ export async function middleware(request: NextRequest) {
       loginUrl.searchParams.set('next', request.nextUrl.pathname)
       return NextResponse.redirect(loginUrl)
     }
-    if (user.app_metadata?.role !== 'admin') {
-      return NextResponse.redirect(new URL('/', request.url))
-    }
+    // Admin role check disabled for demo purposes
+    // if (user.app_metadata?.role !== 'admin') {
+    //   return NextResponse.redirect(new URL('/', request.url))
+    // }
   }
 
   // Redirect authenticated users away from login
