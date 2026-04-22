@@ -182,11 +182,18 @@ export default function ProductForm({ product, categories, collections }: Produc
     { label: 'Archivado', value: 'archived' },
   ]
 
+  const statusConfig: Record<Product['status'], { dot: string; label: string }> = {
+    active:   { dot: 'bg-deep-forest', label: 'Activo' },
+    draft:    { dot: 'bg-champagne',   label: 'Borrador' },
+    archived: { dot: 'bg-warm-gray',   label: 'Archivado' },
+  }
+
   return (
     <div className="pb-24">
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left — 65% */}
-        <div className="flex-1 space-y-6">
+      <div className="flex flex-col lg:flex-row gap-8">
+
+        {/* ── Columna izquierda (contenido principal) ── */}
+        <div className="flex-1 min-w-0 space-y-6">
           <ProductImageUploader
             images={images}
             onChange={setImages}
@@ -195,7 +202,7 @@ export default function ProductForm({ product, categories, collections }: Produc
           />
 
           <div className="bg-white border border-pale-gray rounded-lg p-8">
-            <h3 className="font-body text-[12px] uppercase tracking-[0.08em] text-warm-gray mb-6">Información básica</h3>
+            <h3 className="font-body text-[11px] uppercase tracking-[0.1em] text-warm-gray mb-6">Información básica</h3>
             <div className="space-y-5">
               <Input label="Nombre del producto" id="name" value={name}
                 onChange={(e) => setName(e.target.value)} error={errors.name} />
@@ -207,9 +214,9 @@ export default function ProductForm({ product, categories, collections }: Produc
 
           <div className="bg-white border border-pale-gray rounded-lg p-8">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="font-body text-[12px] uppercase tracking-[0.08em] text-warm-gray">Variantes</h3>
+              <h3 className="font-body text-[11px] uppercase tracking-[0.1em] text-warm-gray">Variantes</h3>
               <button onClick={addVariant}
-                className="flex items-center gap-1 font-body text-[12px] text-charcoal hover:text-champagne transition-colors">
+                className="flex items-center gap-1.5 font-body text-[12px] text-charcoal hover:text-champagne transition-colors">
                 <Plus className="h-3.5 w-3.5" /> Agregar variante
               </button>
             </div>
@@ -251,11 +258,24 @@ export default function ProductForm({ product, categories, collections }: Produc
           </div>
         </div>
 
-        {/* Right — 35% */}
-        <div className="w-full lg:w-[35%] space-y-6">
-          <div className="bg-white border border-pale-gray rounded-lg p-6">
-            <h3 className="font-body text-[12px] uppercase tracking-[0.08em] text-warm-gray mb-5">Estado y visibilidad</h3>
-            <div className="space-y-5">
+        {/* ── Columna derecha (sticky — controles clave) ── */}
+        <div className="w-full lg:w-[420px] shrink-0 space-y-5 lg:sticky lg:top-8 lg:self-start">
+
+          {/* Estado y visibilidad */}
+          <div className="bg-white border border-pale-gray rounded-lg overflow-hidden">
+            <div className="px-6 pt-5 pb-4 border-b border-pale-gray flex items-center justify-between">
+              <h3 className="font-body text-[11px] uppercase tracking-[0.1em] text-warm-gray">Estado y visibilidad</h3>
+              <span className={cn(
+                'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-body text-[11px] tracking-wide',
+                status === 'active'   && 'bg-deep-forest/10 text-deep-forest',
+                status === 'draft'    && 'bg-champagne/20 text-charcoal',
+                status === 'archived' && 'bg-pale-gray text-warm-gray',
+              )}>
+                <span className={cn('h-1.5 w-1.5 rounded-full', statusConfig[status].dot)} />
+                {statusConfig[status].label}
+              </span>
+            </div>
+            <div className="px-6 py-5 space-y-5">
               <Select
                 label="Estado"
                 options={statusOptions}
@@ -264,31 +284,52 @@ export default function ProductForm({ product, categories, collections }: Produc
                   if (isProductStatus(value)) setStatus(value)
                 }}
               />
-              <Toggle checked={isFeatured} onChange={setIsFeatured} label="Producto destacado" />
-              <Toggle checked={isNewArrival} onChange={setIsNewArrival} label="Novedad" />
+              <div className="h-px bg-pale-gray" />
+              <div className="flex items-center justify-between py-1">
+                <span className="font-body text-[13px] text-dark-gray">Producto destacado</span>
+                <Toggle checked={isFeatured} onChange={setIsFeatured} />
+              </div>
+              <div className="flex items-center justify-between py-1">
+                <span className="font-body text-[13px] text-dark-gray">Novedad</span>
+                <Toggle checked={isNewArrival} onChange={setIsNewArrival} />
+              </div>
             </div>
           </div>
 
-          <div className="bg-white border border-pale-gray rounded-lg p-6">
-            <h3 className="font-body text-[12px] uppercase tracking-[0.08em] text-warm-gray mb-5">Precios</h3>
-            <div className="space-y-5">
+          {/* Precios */}
+          <div className="bg-white border border-pale-gray rounded-lg overflow-hidden">
+            <div className="px-6 pt-5 pb-4 border-b border-pale-gray flex items-center justify-between">
+              <h3 className="font-body text-[11px] uppercase tracking-[0.1em] text-warm-gray">Precios</h3>
+              {price && parseFloat(price) > 0 && (
+                <span className="font-display text-[18px] text-charcoal tracking-wide">
+                  ${parseFloat(price).toLocaleString('es-AR')}
+                </span>
+              )}
+            </div>
+            <div className="px-6 py-5 space-y-5">
               <Input label="Precio" id="price" type="number" value={price}
                 onChange={(e) => setPrice(e.target.value)} error={errors.price} />
               <Input label="Precio tachado" id="comparePrice" type="number" value={comparePrice}
                 onChange={(e) => setComparePrice(e.target.value)} />
               {discount && discount > 0 && (
-                <p className="font-body text-[12px] text-deep-forest">{discount}% de descuento</p>
+                <div className="inline-flex items-center gap-1.5 bg-deep-forest/10 text-deep-forest px-3 py-1.5 rounded-full">
+                  <span className="font-body text-[12px] font-medium">{discount}% OFF</span>
+                </div>
               )}
             </div>
           </div>
 
-          <div className="bg-white border border-pale-gray rounded-lg p-6">
-            <h3 className="font-body text-[12px] uppercase tracking-[0.08em] text-warm-gray mb-5">Organización</h3>
-            <div className="space-y-5">
+          {/* Organización */}
+          <div className="bg-white border border-pale-gray rounded-lg overflow-hidden">
+            <div className="px-6 pt-5 pb-4 border-b border-pale-gray">
+              <h3 className="font-body text-[11px] uppercase tracking-[0.1em] text-warm-gray">Organización</h3>
+            </div>
+            <div className="px-6 py-5 space-y-5">
               <Select label="Categoría" options={categoryOptions} value={categoryId} onChange={setCategoryId} />
               <Select label="Colección" options={collectionOptions} value={collectionId} onChange={setCollectionId} />
             </div>
           </div>
+
         </div>
       </div>
 
