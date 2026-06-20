@@ -196,7 +196,7 @@ export default function Footer() {
           <a
             href="https://www.theapexweb.com"
             target="_blank"
-            rel="noopener"
+            rel="noopener nofollow"
             className="group inline-flex items-center gap-2 py-1.5 px-1 -my-1 rounded-sm font-body text-[11px] tracking-[0.06em] text-warm-gray transition-colors duration-200 hover:text-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/20"
           >
             <span
