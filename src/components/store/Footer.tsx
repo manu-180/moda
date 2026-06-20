@@ -190,6 +190,27 @@ export default function Footer() {
             </span>
           </div>
         </div>
+
+        {/* Agency credit — Maison Élara is crafted by APEX Studio */}
+        <div className="mt-8 flex justify-center">
+          <a
+            href="https://www.theapexweb.com"
+            target="_blank"
+            rel="noopener"
+            className="group inline-flex items-center gap-2 py-1.5 px-1 -my-1 rounded-sm font-body text-[11px] tracking-[0.06em] text-warm-gray transition-colors duration-200 hover:text-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/20"
+          >
+            <span
+              aria-hidden
+              className="grid h-[18px] w-[18px] place-items-center rounded-full border border-[rgba(196,162,101,0.4)] font-display text-[10px] leading-none text-champagne transition-colors duration-300 group-hover:border-champagne"
+            >
+              A
+            </span>
+            <span className="relative">
+              Un proyecto de APEX Studio
+              <span className="absolute -bottom-0.5 left-0 h-[1px] w-0 bg-champagne transition-all duration-300 ease-luxury group-hover:w-full motion-reduce:transition-none" />
+            </span>
+          </a>
+        </div>
       </div>
     </footer>
   )
