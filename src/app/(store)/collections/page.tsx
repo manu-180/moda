@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 }
 
 async function getCollectionsWithCounts() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: collections } = await supabase
     .from('collections')
     .select('*')

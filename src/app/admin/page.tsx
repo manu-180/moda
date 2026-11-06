@@ -7,7 +7,7 @@ import TopProducts from '@/components/admin/TopProducts'
 import DataTable from '@/components/admin/DataTable'
 
 async function getDashboardData() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Orders with items
   const { data: orders } = await supabase

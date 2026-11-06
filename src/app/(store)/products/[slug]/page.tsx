@@ -9,11 +9,11 @@ import { SITE_NAME } from '@/lib/constants'
 import { getGalleryImagesForProduct } from '@/lib/editorial-images'
 
 interface PageProps {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 async function getProduct(slug: string): Promise<{ product: Product; category: Category | null } | null> {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data } = await supabase
     .from('products')
     .select('*, images:product_images(*), variants:product_variants(*)')
@@ -38,7 +38,7 @@ async function getProduct(slug: string): Promise<{ product: Product; category: C
 }
 
 async function getRelatedProducts(product: Product): Promise<Product[]> {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data } = await supabase
     .from('products')
     .select('*, images:product_images(*), variants:product_variants(*)')
@@ -50,7 +50,8 @@ async function getRelatedProducts(product: Product): Promise<Product[]> {
   return (data as Product[]) || []
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const result = await getProduct(params.slug)
   if (!result) return { title: 'Producto no encontrado' }
 
@@ -66,7 +67,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export default async function ProductPage({ params }: PageProps) {
+export default async function ProductPage(props: PageProps) {
+  const params = await props.params;
   const result = await getProduct(params.slug)
   if (!result) notFound()
 
