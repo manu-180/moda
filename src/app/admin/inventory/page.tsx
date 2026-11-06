@@ -3,7 +3,7 @@ import type { Product, Category } from '@/types'
 import AdminInventory from '@/components/admin/AdminInventory'
 
 async function getData() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: products } = await supabase
     .from('products')
     .select('*, images:product_images(*), variants:product_variants(*)')

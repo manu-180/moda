@@ -3,11 +3,11 @@ import type { Product, Category, Collection } from '@/types'
 import ProductForm from '@/components/admin/ProductForm'
 
 interface PageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 async function getData(id: string) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   let product: Product | null = null
   if (id !== 'new') {
@@ -29,7 +29,8 @@ async function getData(id: string) {
   }
 }
 
-export default async function EditProductPage({ params }: PageProps) {
+export default async function EditProductPage(props: PageProps) {
+  const params = await props.params;
   const { product, categories, collections } = await getData(params.id)
 
   return (

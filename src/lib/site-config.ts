@@ -136,7 +136,7 @@ export const getSiteConfig = cache(async (): Promise<SiteConfig> => {
   if (!hasSupabaseEnv()) return SITE_CONFIG_DEFAULTS
 
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data, error } = await supabase.from('site_settings').select('key, value')
 
     if (error || !data) return SITE_CONFIG_DEFAULTS

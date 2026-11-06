@@ -3,7 +3,7 @@ import type { Category, Collection } from '@/types'
 import AdminCategoriesCollections from '@/components/admin/AdminCategoriesCollections'
 
 async function getData() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const { data: categories } = await supabase.from('categories').select('*').order('position')
   const { data: collections } = await supabase.from('collections').select('*').order('created_at', { ascending: false })

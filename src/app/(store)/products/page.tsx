@@ -10,7 +10,7 @@ export const metadata = {
 }
 
 async function getAllProducts(): Promise<Product[]> {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data } = await supabase
     .from('products')
     .select('*, images:product_images(*), variants:product_variants(*)')
@@ -27,7 +27,7 @@ async function getAllProducts(): Promise<Product[]> {
 }
 
 async function getCategories(): Promise<(Category & { product_count: number })[]> {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // 2 queries en lugar de N+1: categorías + IDs de productos activos
   const [{ data: categories }, { data: activeCategoryIds }] = await Promise.all([

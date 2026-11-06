@@ -19,10 +19,10 @@ const VIRTUAL_NEW_ARRIVALS: Collection = {
   is_active: true,
 }
 
-interface PageProps { params: { slug: string } }
+interface PageProps { params: Promise<{ slug: string }> }
 
 async function getData(slug: string) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   if (slug === NEW_ARRIVALS_SLUG) {
     const { data: products } = await supabase
@@ -53,7 +53,8 @@ async function getData(slug: string) {
   return { collection: collection as Collection, products: (products as Product[]) || [] }
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const result = await getData(params.slug)
   if (!result) return { title: 'Colección no encontrada' }
   return {
@@ -62,7 +63,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export default async function CollectionPage({ params }: PageProps) {
+export default async function CollectionPage(props: PageProps) {
+  const params = await props.params;
   const result = await getData(params.slug)
   if (!result) notFound()
   return <CollectionPageContent collection={result.collection} products={result.products} />

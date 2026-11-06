@@ -21,7 +21,7 @@ function hasSupabaseEnv(): boolean {
 
 async function getNewArrivals(): Promise<Product[]> {
   if (!hasSupabaseEnv()) return []
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data } = await supabase
     .from('products')
     .select('*, images:product_images(*), variants:product_variants(*)')
@@ -34,7 +34,7 @@ async function getNewArrivals(): Promise<Product[]> {
 
 async function getCategories(): Promise<(Category & { product_count: number })[]> {
   if (!hasSupabaseEnv()) return []
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: categories } = await supabase
     .from('categories')
     .select('*')

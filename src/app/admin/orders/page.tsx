@@ -3,7 +3,7 @@ import type { Order } from '@/types'
 import AdminOrdersList from '@/components/admin/AdminOrdersList'
 
 async function getData() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data } = await supabase
     .from('orders')
     .select('*, items:order_items(*)')

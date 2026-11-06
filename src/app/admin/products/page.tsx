@@ -3,7 +3,7 @@ import type { Product, Category } from '@/types'
 import AdminProductsList from '@/components/admin/AdminProductsList'
 
 async function getData() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const { data: products } = await supabase
     .from('products')
